@@ -37,13 +37,10 @@ struct TanquesView: View {
                     .foregroundStyle(Theme.label2)
             }
 
-            HStack(alignment: .bottom, spacing: 16) {
-                TankGaugeView(percentage: tank.percentage, fuelType: tank.fuelType, height: 110)
+            HStack(alignment: .top, spacing: 16) {
+                TankGaugeView(percentage: tank.percentage, fuelType: tank.fuelType, width: 92, height: 92)
 
                 VStack(alignment: .leading, spacing: 4) {
-                    Text("\(tank.percentage)%")
-                        .font(.system(size: 36, weight: .bold))
-                        .foregroundStyle(tank.level.color)
                     Text("\(Format.grouped(tank.current)) / \(Format.grouped(tank.capacity)) gal")
                         .font(.system(size: 13))
                         .foregroundStyle(Theme.label2)

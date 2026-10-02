@@ -43,6 +43,7 @@
 		FC1000000000000000000004 /* SucursalViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC0000000000000000000004 /* SucursalViewModel.swift */; };
 		FC1000000000000000000005 /* ScreenViewModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC0000000000000000000005 /* ScreenViewModels.swift */; };
 		FC1000000000000000000006 /* AdministracionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC0000000000000000000006 /* AdministracionView.swift */; };
+		2A58A2489FB8C9A64B8D9462 /* HeroHeaderCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3189708076B9AD538C2EED3B /* HeroHeaderCard.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -84,6 +85,7 @@
 		FC0000000000000000000004 /* SucursalViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ViewModels/SucursalViewModel.swift"; sourceTree = "<group>"; };
 		FC0000000000000000000005 /* ScreenViewModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ViewModels/ScreenViewModels.swift"; sourceTree = "<group>"; };
 		FC0000000000000000000006 /* AdministracionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Screens/General/AdministracionView.swift"; sourceTree = "<group>"; };
+		3189708076B9AD538C2EED3B /* HeroHeaderCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "HeroHeaderCard.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -130,6 +132,7 @@
 		DE9C1021B106EC3705E94970 /* Components */ = {
 			isa = PBXGroup;
 			children = (
+				3189708076B9AD538C2EED3B,
 				C1548DEB79F3DF8D1B7B0EC5,
 				8142124344A50CA70797F98A,
 				CB6F814E6CA181E59526800E,
@@ -307,6 +310,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				2A58A2489FB8C9A64B8D9462 /* HeroHeaderCard.swift in Sources */,
 				FC1000000000000000000001 /* CorteModels.swift in Sources */,
 				FC1000000000000000000002 /* SessionViewModel.swift in Sources */,
 				FC1000000000000000000003 /* GeneralViewModel.swift in Sources */,

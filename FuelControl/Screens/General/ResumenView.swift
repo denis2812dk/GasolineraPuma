@@ -7,7 +7,12 @@ struct ResumenView: View {
         @Bindable var model = viewModel
         ScrollView {
             VStack(alignment: .leading, spacing: 16) {
-                Text("Red de estaciones").font(.largeTitle.bold())
+                HeroHeaderCard(
+                    eyebrow: "Red de estaciones",
+                    title: viewModel.selectedId.isEmpty ? "Todo el país" : (viewModel.franchises.first { $0.id == viewModel.selectedId }?.name ?? "Todo el país"),
+                    icon: "map.fill",
+                    colors: [Theme.primary, Color(hex: "1E63D6")]
+                )
                 Picker("Panorama", selection: $model.selectedId) {
                     Text("Todo el país").tag("")
                     ForEach(viewModel.franchises) { station in

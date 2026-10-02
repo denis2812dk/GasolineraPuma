@@ -6,10 +6,7 @@ struct InicioView: View {
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 16) {
-                VStack(alignment: .leading, spacing: 2) {
-                    Text(viewModel.name).font(.largeTitle.bold())
-                    Text(viewModel.zone).font(.subheadline).foregroundStyle(Theme.label2)
-                }
+                HeroHeaderCard(eyebrow: viewModel.zone, title: viewModel.name, icon: "fuelpump.fill")
                 LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: 12) {
                     KPICard(title: "Ventas del día", value: viewModel.revenue, icon: "dollarsign.circle.fill")
                     KPICard(title: "Galones vendidos", value: viewModel.gallons, icon: "drop.fill")
@@ -26,16 +23,17 @@ struct InicioView: View {
                     .font(.headline)
                 ForEach(viewModel.tanks) { tank in
                     HStack(spacing: 16) {
-                        TankGaugeView(percentage: tank.percentage, fuelType: tank.fuelType)
-                        FuelChip(type: tank.fuelType)
-                        Spacer()
-                        VStack(alignment: .trailing, spacing: 2) {
-                            Text("\(tank.percentage)%").font(.title2.bold())
+                        TankGaugeView(percentage: tank.percentage, fuelType: tank.fuelType, width: 60, height: 60)
+                        VStack(alignment: .leading, spacing: 3) {
+                            FuelChip(type: tank.fuelType)
                             Text(tank.level.rawValue)
                                 .font(.caption.weight(.semibold))
                                 .foregroundStyle(tank.level.color)
-                            Text("\(tank.current) gal").font(.caption).foregroundStyle(Theme.label2)
                         }
+                        Spacer()
+                        Text("\(tank.current) gal")
+                            .font(.subheadline.weight(.semibold))
+                            .foregroundStyle(Theme.label2)
                     }.padding().iosCard()
                 }
             }.padding()
