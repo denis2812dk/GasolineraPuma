@@ -26,8 +26,8 @@ jobs:
             echo "::error::${escaped}"
           done
 
-  build:
-    name: xcodebuild (Debug, iOS Simulator SDK)
+  build-and-run:
+    name: xcodebuild + iOS Simulator run (screenshot)
     runs-on: macos-15
 
     steps:
@@ -37,7 +37,21 @@ jobs:
       - name: Show selected Xcode version
         run: xcodebuild -version
 
-      - name: Build
+      - name: Pick an available iOS simulator
+        id: sim
+        run: |
+          set -o pipefail
+          LINE=$(xcrun simctl list devices available | grep -E "iPhone" | tail -n1)
+          echo "Chosen simulator line: $LINE"
+          DEVICE_ID=$(echo "$LINE" | grep -Eo '[0-9A-F]{8}-[0-9A-F]{4}-[0-9A-F]{4}-[0-9A-F]{4}-[0-9A-F]{12}')
+          if [ -z "$DEVICE_ID" ]; then
+            echo "::error::No available iPhone simulator found."
+            xcrun simctl list devices available
+            exit 1
+          fi
+          echo "device_id=$DEVICE_ID" >> "$GITHUB_OUTPUT"
+
+      - name: Build for simulator
         id: build
         continue-on-error: true
         run: |
@@ -45,8 +59,9 @@ jobs:
           xcodebuild \
             -project FuelControl.xcodeproj \
             -scheme FuelControl \
-            -destination 'generic/platform=iOS Simulator' \
+            -destination "id=${{ steps.sim.outputs.device_id }}" \
             -configuration Debug \
+            -derivedDataPath build \
             CODE_SIGNING_ALLOWED=NO \
             clean build 2>&1 | tee xcodebuild.log
 
@@ -60,6 +75,28 @@ jobs:
           echo "---- full xcodebuild tail (also in the uploaded artifact) ----"
           tail -n 200 xcodebuild.log
           exit 1
+
+      - name: Boot simulator, install and launch the app
+        if: steps.build.outcome == 'success'
+        run: |
+          set -o pipefail
+          DEVICE_ID="${{ steps.sim.outputs.device_id }}"
+          xcrun simctl bootstatus "$DEVICE_ID" -b
+          APP_PATH="build/Build/Products/Debug-iphonesimulator/FuelControl.app"
+          ls -la "$APP_PATH"
+          xcrun simctl install "$DEVICE_ID" "$APP_PATH"
+          xcrun simctl launch "$DEVICE_ID" com.fuelcontrol.app
+          sleep 5
+          mkdir -p screenshots
+          xcrun simctl io "$DEVICE_ID" screenshot screenshots/01-login.png
+
+      - name: Upload screenshots
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: simulator-screenshots
+          path: screenshots/
+          if-no-files-found: ignore
 
       - name: Upload full build log
         if: always()
