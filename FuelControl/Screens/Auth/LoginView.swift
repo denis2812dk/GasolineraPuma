@@ -11,7 +11,7 @@ struct LoginView: View {
     var body: some View {
         ZStack {
             LinearGradient(
-                colors: [Color(hex: "0B3D91"), Color(hex: "061e4a")],
+                colors: [Theme.primary, Color(hex: "003D24")],
                 startPoint: .top, endPoint: .bottom
             )
             .ignoresSafeArea()
@@ -19,15 +19,16 @@ struct LoginView: View {
             VStack(spacing: 0) {
                 Spacer(minLength: 40)
 
-                VStack(spacing: 12) {
-                    ZStack {
-                        RoundedRectangle(cornerRadius: 24, style: .continuous)
-                            .fill(.white.opacity(0.15))
-                            .frame(width: 80, height: 80)
-                        Image(systemName: "drop.fill")
-                            .font(.system(size: 40))
-                            .foregroundStyle(Theme.accent)
-                    }
+                VStack(spacing: 16) {
+                    Image("PumaLogo")
+                        .resizable()
+                        .scaledToFit()
+                        .frame(width: 168, height: 30)
+                        .padding(.horizontal, 22)
+                        .padding(.vertical, 16)
+                        .background(.white)
+                        .clipShape(RoundedRectangle(cornerRadius: 18, style: .continuous))
+                        .shadow(color: .black.opacity(0.25), radius: 14, x: 0, y: 6)
                     VStack(spacing: 2) {
                         Text("FuelControl")
                             .font(.system(size: 32, weight: .bold))
@@ -61,7 +62,7 @@ struct LoginView: View {
                         .textInputAutocapitalization(.never)
                         .keyboardType(.emailAddress)
                         .padding(14)
-                        .background(Color(hex: "787880").opacity(0.12))
+                        .background(Theme.subtleFill)
                         .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
 
                     ZStack(alignment: .trailing) {
@@ -74,7 +75,7 @@ struct LoginView: View {
                         }
                         .padding(14)
                         .padding(.trailing, 40)
-                        .background(Color(hex: "787880").opacity(0.12))
+                        .background(Theme.subtleFill)
                         .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
 
                         Button {

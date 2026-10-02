@@ -10,9 +10,9 @@ struct IOSCardModifier: ViewModifier {
             .clipShape(RoundedRectangle(cornerRadius: Theme.cardCornerRadius, style: .continuous))
             .overlay(
                 RoundedRectangle(cornerRadius: Theme.cardCornerRadius, style: .continuous)
-                    .strokeBorder(Color.primary.opacity(0.06), lineWidth: 1)
+                    .strokeBorder(Color.primary.opacity(0.08), lineWidth: 1)
             )
-            .shadow(color: .black.opacity(0.08), radius: 12, x: 0, y: 4)
+            .shadow(color: .black.opacity(0.1), radius: 14, x: 0, y: 5)
     }
 }
 

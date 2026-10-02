@@ -18,7 +18,7 @@ enum FuelType: String, Codable, CaseIterable, Identifiable {
     var color: Color {
         switch self {
         case .regular: return Color(hex: "1E8E3E")
-        case .superFuel: return Color(hex: "D93025")
+        case .superFuel: return Color(hex: "ED1C24")
         case .diesel: return Color(hex: "5F6368")
         }
     }
@@ -49,7 +49,7 @@ enum FranchiseStatus: String, Codable {
         switch self {
         case .ok: return Color(hex: "1E8E3E")
         case .warning: return Color(hex: "F28C28")
-        case .critical: return Color(hex: "D93025")
+        case .critical: return Color(hex: "ED1C24")
         }
     }
 
@@ -69,9 +69,9 @@ enum AlertSeverity: String, Codable {
 
     var color: Color {
         switch self {
-        case .critical: return Color(hex: "D93025")
-        case .warning: return Color(hex: "F28C28")
-        case .info: return Color(hex: "0B3D91")
+        case .critical: return Theme.danger
+        case .warning: return Theme.accent
+        case .info: return Theme.primary
         }
     }
 

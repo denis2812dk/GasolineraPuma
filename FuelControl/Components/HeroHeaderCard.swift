@@ -6,7 +6,7 @@ struct HeroHeaderCard: View {
     let eyebrow: String
     let title: String
     var icon: String? = nil
-    var colors: [Color] = [Theme.primary, Color(hex: "1E63D6")]
+    var colors: [Color] = [Theme.primary, Theme.primaryLight]
 
     var body: some View {
         HStack(alignment: .center, spacing: 14) {
