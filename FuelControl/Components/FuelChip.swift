@@ -8,8 +8,8 @@ struct FuelChip: View {
             .font(.system(size: 11, weight: .semibold))
             .foregroundStyle(type.color)
             .padding(.horizontal, 8)
-            .padding(.vertical, 2)
-            .background(type.backgroundColor)
+            .padding(.vertical, 3)
+            .background(type.color.opacity(0.15))
             .clipShape(RoundedRectangle(cornerRadius: 6, style: .continuous))
     }
 }
@@ -17,12 +17,10 @@ struct FuelChip: View {
 struct StatusBadge: View {
     let label: String
     let color: Color
-    let backgroundColor: Color
 
     init(franchiseStatus: FranchiseStatus) {
         label = franchiseStatus.label
         color = franchiseStatus.color
-        backgroundColor = franchiseStatus.backgroundColor
     }
 
     var body: some View {
@@ -30,8 +28,8 @@ struct StatusBadge: View {
             .font(.system(size: 11, weight: .semibold))
             .foregroundStyle(color)
             .padding(.horizontal, 8)
-            .padding(.vertical, 2)
-            .background(backgroundColor)
+            .padding(.vertical, 3)
+            .background(color.opacity(0.15))
             .clipShape(Capsule())
     }
 }
