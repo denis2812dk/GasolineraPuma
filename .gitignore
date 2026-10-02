@@ -1,0 +1,9 @@
+# Xcode / iOS
+**/xcuserdata/
+*.xcuserstate
+DerivedData/
+.swiftpm/
+*.ipa
+*.dSYM.zip
+*.dSYM
+.DS_Store
