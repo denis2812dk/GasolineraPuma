@@ -13,8 +13,6 @@ struct CompararView: View {
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 16) {
-                Text("Comparar").font(.system(size: 28, weight: .bold))
-
                 SegmentedControlView(
                     options: CompareMetric.allCases.map(\.shortLabel),
                     selection: Binding(
@@ -37,7 +35,7 @@ struct CompararView: View {
                     }
                 }
 
-                ChartCardView(title: "Comparación por \(viewModel.metric.label)") {
+                ChartCardView(title: "Comparación por \(viewModel.metric.label)", icon: "chart.bar.xaxis") {
                     Chart(viewModel.selectedFranchises) { f in
                         BarMark(
                             x: .value("Franquicia", f.name.components(separatedBy: " ").first ?? f.name),
@@ -61,6 +59,8 @@ struct CompararView: View {
             .padding(.bottom, 20)
         }
         .background(Theme.background)
+        .navigationTitle("Comparar")
+        .navigationBarTitleDisplayMode(.large)
     }
 
     private var comparisonTable: some View {

@@ -27,21 +27,19 @@ struct PerfilView: View {
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 16) {
-                Text("Perfil").font(.system(size: 28, weight: .bold))
-
                 HStack(spacing: 16) {
                     Circle()
-                        .fill(Theme.primary)
+                        .fill(LinearGradient(colors: [Theme.primary, Theme.primary.opacity(0.75)], startPoint: .top, endPoint: .bottom))
                         .frame(width: 64, height: 64)
                         .overlay(Text("AR").font(.system(size: 24, weight: .bold)).foregroundStyle(.white))
                     VStack(alignment: .leading, spacing: 4) {
-                        Text("Alejandro Rivas").font(.system(size: 17, weight: .bold))
-                        Text("alejandro@fuelcontrol.com").font(.system(size: 13)).foregroundStyle(Theme.label2)
+                        Text("Alejandro Rivas").font(.headline)
+                        Text("alejandro@fuelcontrol.com").font(.caption).foregroundStyle(Theme.label2)
                         Text("Gerente General")
-                            .font(.system(size: 11, weight: .semibold))
+                            .font(.caption2.weight(.semibold))
                             .foregroundStyle(Theme.primary)
                             .padding(.horizontal, 8).padding(.vertical, 2)
-                            .background(Color(hex: "EDF2FF"))
+                            .background(Theme.primary.opacity(0.12))
                             .clipShape(Capsule())
                     }
                 }
@@ -49,15 +47,15 @@ struct PerfilView: View {
                 .iosCard()
 
                 Text("NOTIFICACIONES")
-                    .font(.system(size: 13, weight: .semibold))
+                    .font(.caption.weight(.semibold))
                     .foregroundStyle(Theme.label2)
 
                 VStack(spacing: 0) {
                     ForEach(Array(notifRows.enumerated()), id: \.element.id) { i, row in
                         HStack {
                             VStack(alignment: .leading, spacing: 2) {
-                                Text(row.label).font(.system(size: 13, weight: .semibold))
-                                Text(row.sub).font(.system(size: 11)).foregroundStyle(Theme.label2)
+                                Text(row.label).font(.subheadline.weight(.semibold))
+                                Text(row.sub).font(.caption).foregroundStyle(Theme.label2)
                             }
                             Spacer()
                             Toggle("", isOn: row.binding)
@@ -72,23 +70,23 @@ struct PerfilView: View {
                 .iosCard()
 
                 Text("CUENTA")
-                    .font(.system(size: 13, weight: .semibold))
+                    .font(.caption.weight(.semibold))
                     .foregroundStyle(Theme.label2)
 
                 VStack(spacing: 0) {
-                    ForEach(Array(["Cambiar contraseña", "Configuración de red", "Soporte técnico"].enumerated()), id: \.offset) { i, item in
+                    ForEach(Array(accountRows.enumerated()), id: \.offset) { i, item in
                         Button {} label: {
                             HStack {
-                                Text(item).font(.system(size: 13)).foregroundStyle(.black)
+                                Label(item.0, systemImage: item.1).foregroundStyle(.primary)
                                 Spacer()
-                                Image(systemName: "chevron.right").font(.system(size: 12)).foregroundStyle(.black.opacity(0.3))
+                                Image(systemName: "chevron.right").font(.caption).foregroundStyle(Theme.label3)
                             }
                             .padding(.horizontal, 16)
                             .padding(.vertical, 14)
                             .contentShape(Rectangle())
                         }
                         .buttonStyle(.plain)
-                        if i < 2 { Divider().padding(.leading, 16) }
+                        if i < accountRows.count - 1 { Divider().padding(.leading, 16) }
                     }
                 }
                 .iosCard()
@@ -99,7 +97,7 @@ struct PerfilView: View {
                 .buttonStyle(.iosPrimary(background: Theme.danger))
 
                 Text("FuelControl v2.1.0 · © 2026 FuelControl Inc.")
-                    .font(.system(size: 11))
+                    .font(.caption)
                     .foregroundStyle(Theme.label2)
                     .frame(maxWidth: .infinity, alignment: .center)
             }
@@ -107,7 +105,15 @@ struct PerfilView: View {
             .padding(.bottom, 20)
         }
         .background(Theme.background)
+        .navigationTitle("Perfil")
+        .navigationBarTitleDisplayMode(.large)
     }
+
+    private let accountRows: [(String, String)] = [
+        ("Cambiar contraseña", "lock.fill"),
+        ("Configuración de red", "wifi"),
+        ("Soporte técnico", "questionmark.circle.fill"),
+    ]
 }
 
 #Preview {

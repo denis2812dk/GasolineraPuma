@@ -7,28 +7,39 @@ struct KPICard: View {
     var change: String? = nil
     var changeOk: Bool = true
     var accent: Color? = nil
+    var icon: String? = nil
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 2) {
-            Text(title)
-                .font(.system(size: 11, weight: .medium))
-                .foregroundStyle(Theme.label2)
+        VStack(alignment: .leading, spacing: 6) {
+            HStack(alignment: .firstTextBaseline) {
+                Text(title)
+                    .font(.caption.weight(.semibold))
+                    .foregroundStyle(Theme.label2)
+                Spacer(minLength: 4)
+                if let icon {
+                    Image(systemName: icon)
+                        .font(.caption)
+                        .foregroundStyle(accent ?? Theme.primary)
+                }
+            }
             Text(value)
-                .font(.system(size: 22, weight: .bold))
+                .font(.title2.weight(.bold))
                 .foregroundStyle(accent ?? .primary)
+                .minimumScaleFactor(0.8)
+                .lineLimit(1)
             if let sub {
                 Text(sub)
-                    .font(.system(size: 11))
+                    .font(.caption)
                     .foregroundStyle(Theme.label2)
             }
             if let change {
                 Text(change)
-                    .font(.system(size: 11, weight: .semibold))
+                    .font(.caption.weight(.semibold))
                     .foregroundStyle(changeOk ? Theme.ok : Theme.danger)
             }
         }
         .frame(maxWidth: .infinity, alignment: .leading)
-        .padding(12)
+        .padding(14)
         .iosCard()
     }
 }

@@ -1,30 +1,18 @@
 import SwiftUI
 
-/// Mirrors the custom `.seg-control` pill segmented control from the original design.
+/// Thin wrapper over the native segmented `Picker`, so call sites can keep
+/// passing plain `[String]` options + an `Int` binding.
 struct SegmentedControlView: View {
     let options: [String]
     @Binding var selection: Int
 
     var body: some View {
-        HStack(spacing: 2) {
+        Picker("", selection: $selection) {
             ForEach(options.indices, id: \.self) { i in
-                Button {
-                    selection = i
-                } label: {
-                    Text(options[i])
-                        .font(.system(size: 13, weight: .medium))
-                        .foregroundStyle(selection == i ? .black : .black.opacity(0.6))
-                        .frame(maxWidth: .infinity)
-                        .padding(.vertical, 5)
-                        .background(selection == i ? Color.white : Color.clear)
-                        .clipShape(RoundedRectangle(cornerRadius: 7, style: .continuous))
-                        .shadow(color: .black.opacity(selection == i ? 0.12 : 0), radius: 3, x: 0, y: 1)
-                }
-                .buttonStyle(.plain)
+                Text(options[i]).tag(i)
             }
         }
-        .padding(2)
-        .background(Color(hex: "787880").opacity(0.12))
-        .clipShape(RoundedRectangle(cornerRadius: 9, style: .continuous))
+        .pickerStyle(.segmented)
+        .labelsHidden()
     }
 }

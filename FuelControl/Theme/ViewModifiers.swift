@@ -8,7 +8,11 @@ struct IOSCardModifier: ViewModifier {
             .padding(padding)
             .background(Theme.card)
             .clipShape(RoundedRectangle(cornerRadius: Theme.cardCornerRadius, style: .continuous))
-            .shadow(color: .black.opacity(0.08), radius: 3, x: 0, y: 1)
+            .overlay(
+                RoundedRectangle(cornerRadius: Theme.cardCornerRadius, style: .continuous)
+                    .strokeBorder(Color.primary.opacity(0.06), lineWidth: 1)
+            )
+            .shadow(color: .black.opacity(0.08), radius: 12, x: 0, y: 4)
     }
 }
 
@@ -27,10 +31,14 @@ struct PrimaryButtonStyle: ButtonStyle {
             .font(.system(size: 17, weight: .semibold))
             .foregroundStyle(.white)
             .frame(maxWidth: .infinity)
-            .padding(16)
-            .background(background)
-            .clipShape(RoundedRectangle(cornerRadius: 14, style: .continuous))
-            .opacity(configuration.isPressed ? 0.75 : 1)
+            .padding(.vertical, 16)
+            .background(
+                LinearGradient(colors: [background, background.opacity(0.82)], startPoint: .top, endPoint: .bottom)
+            )
+            .clipShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
+            .scaleEffect(configuration.isPressed ? 0.97 : 1)
+            .opacity(configuration.isPressed ? 0.85 : 1)
+            .animation(.easeOut(duration: 0.15), value: configuration.isPressed)
     }
 }
 
@@ -45,11 +53,11 @@ struct PillChipStyle: ViewModifier {
 
     func body(content: Content) -> some View {
         content
-            .font(.system(size: 12, weight: .semibold))
-            .padding(.horizontal, 12)
-            .padding(.vertical, 6)
-            .background(isSelected ? selectedColor : Color(hex: "787880").opacity(0.12))
-            .foregroundStyle(isSelected ? .white : Color.black.opacity(0.7))
+            .font(.system(size: 13, weight: .semibold))
+            .padding(.horizontal, 14)
+            .padding(.vertical, 8)
+            .background(isSelected ? AnyShapeStyle(selectedColor) : AnyShapeStyle(Theme.subtleFill))
+            .foregroundStyle(isSelected ? .white : .primary)
             .clipShape(Capsule())
     }
 }

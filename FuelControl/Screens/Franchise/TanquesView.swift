@@ -5,16 +5,12 @@ struct TanquesView: View {
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 12) {
-                Text("Tanques")
-                    .font(.system(size: 28, weight: .bold))
-                    .padding(.bottom, 4)
-
                 ForEach(viewModel.tanks) { tank in
                     tankDetailCard(tank)
                 }
 
-                Text("Crítico: hasta 20% · Medio: más de 20% hasta 50% · Óptimo: más de 50%")
-                    .font(.caption).foregroundStyle(.secondary)
+                Label("Crítico: hasta 20% · Medio: más de 20% hasta 50% · Óptimo: más de 50%", systemImage: "info.circle")
+                    .font(.caption).foregroundStyle(Theme.label2)
                 if let rec = viewModel.inventoryRec { reconciliationCard(rec) }
                 if !viewModel.receptions.isEmpty { receptionsCard }
             }
@@ -22,6 +18,8 @@ struct TanquesView: View {
             .padding(.bottom, 20)
         }
         .background(Theme.background)
+        .navigationTitle("Tanques")
+        .navigationBarTitleDisplayMode(.large)
     }
 
     private func tankDetailCard(_ tank: Tank) -> some View {

@@ -10,9 +10,11 @@ struct TankGaugeView: View {
 
     var body: some View {
         ZStack(alignment: .bottom) {
-            Color(hex: "F1F1F1")
+            Theme.subtleFill
             Rectangle()
-                .fill(fillColor)
+                .fill(
+                    LinearGradient(colors: [fillColor.opacity(0.75), fillColor], startPoint: .top, endPoint: .bottom)
+                )
                 .frame(height: height * CGFloat(min(100, max(0, percentage))) / 100)
                 .animation(.easeInOut(duration: 0.5), value: percentage)
 
@@ -25,10 +27,10 @@ struct TankGaugeView: View {
             }
         }
         .frame(width: width, height: height)
-        .clipShape(RoundedRectangle(cornerRadius: 3, style: .continuous))
+        .clipShape(RoundedRectangle(cornerRadius: 6, style: .continuous))
         .overlay(
-            RoundedRectangle(cornerRadius: 3, style: .continuous)
-                .stroke(Color.black.opacity(0.15), lineWidth: 1)
+            RoundedRectangle(cornerRadius: 6, style: .continuous)
+                .strokeBorder(Color.primary.opacity(0.1), lineWidth: 1)
         )
     }
 }

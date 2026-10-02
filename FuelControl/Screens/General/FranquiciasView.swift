@@ -9,11 +9,8 @@ struct FranquiciasView: View {
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 12) {
-                VStack(alignment: .leading, spacing: 12) {
-                    Text("Franquicias").font(.system(size: 28, weight: .bold))
-                    SegmentedControlView(options: ["Lista", "Mapa"], selection: $view)
-                }
-                .padding(.horizontal, 16)
+                SegmentedControlView(options: ["Lista", "Mapa"], selection: $view)
+                    .padding(.horizontal, 16)
 
                 if view == 1 {
                     mapView
@@ -21,10 +18,12 @@ struct FranquiciasView: View {
                     listView
                 }
             }
-            .padding(.top, 16)
+            .padding(.top, 8)
             .padding(.bottom, 20)
         }
         .background(Theme.background)
+        .navigationTitle("Franquicias")
+        .navigationBarTitleDisplayMode(.large)
     }
 
     // MARK: - List
@@ -36,7 +35,7 @@ struct FranquiciasView: View {
                 TextField("Buscar franquicia o zona...", text: Binding(get: { viewModel.search }, set: { viewModel.search = $0 }))
             }
             .padding(14)
-            .background(Color(hex: "787880").opacity(0.12))
+            .background(Theme.subtleFill)
             .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
 
             VStack(spacing: 0) {
@@ -58,7 +57,7 @@ struct FranquiciasView: View {
                                     .font(.system(size: 11))
                                     .foregroundStyle(f.growth >= 0 ? Theme.ok : Theme.danger)
                             }
-                            Image(systemName: "chevron.right").font(.system(size: 12)).foregroundStyle(.black.opacity(0.3))
+                            Image(systemName: "chevron.right").font(.system(size: 12)).foregroundStyle(Theme.label3)
                         }
                         .padding(.horizontal, 16)
                         .padding(.vertical, 10)

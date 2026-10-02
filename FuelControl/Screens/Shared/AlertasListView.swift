@@ -6,9 +6,6 @@ struct AlertasListView: View {
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 16) {
-                Text("Alertas")
-                    .font(.system(size: 28, weight: .bold))
-
                 ScrollView(.horizontal, showsIndicators: false) {
                     HStack(spacing: 8) {
                         ForEach(viewModel.categories, id: \.self) { cat in
@@ -51,5 +48,7 @@ struct AlertasListView: View {
             .padding(.bottom, 20)
         }
         .background(Theme.background)
+        .navigationTitle("Alertas")
+        .navigationBarTitleDisplayMode(.large)
     }
 }
