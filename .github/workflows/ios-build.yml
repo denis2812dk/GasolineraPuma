@@ -7,7 +7,7 @@ on:
 
 jobs:
   logic-tests:
-    name: swift test (business logic: cortes, bombas, validaciones)
+    name: "swift test (business logic: cortes, bombas, validaciones)"
     runs-on: macos-15
     steps:
       - name: Checkout
