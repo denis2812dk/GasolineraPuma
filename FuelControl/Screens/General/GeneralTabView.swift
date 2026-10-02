@@ -2,6 +2,8 @@ import SwiftUI
 
 struct GeneralTabView: View {
     let general: GeneralViewModel
+    let accountName: String
+    let accountEmail: String
     let onLogout: () -> Void
 
     var body: some View {
@@ -27,7 +29,7 @@ struct GeneralTabView: View {
             }
             .tabItem { Label("Administración", systemImage: "building.2.crop.circle") }
             NavigationStack {
-                PerfilView(onLogout: onLogout)
+                PerfilView(name: accountName, email: accountEmail, onLogout: onLogout)
             }
             .tabItem { Label("Perfil", systemImage: "person.fill") }
         }

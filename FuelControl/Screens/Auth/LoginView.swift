@@ -1,12 +1,15 @@
 import SwiftUI
 
 struct LoginView: View {
-    let onLogin: (UserRole) -> Void
+    /// Returns an error message to display, or `nil` on successful login.
+    let onLogin: (_ email: String, _ password: String) -> String?
 
     @State private var role: UserRole = .franchise
     @State private var showPassword = false
     @State private var email = ""
     @State private var password = ""
+    @State private var errorMessage: String?
+    @State private var showForgotPasswordAlert = false
 
     var body: some View {
         ZStack {
@@ -41,7 +44,7 @@ struct LoginView: View {
                 .padding(.bottom, 24)
 
                 VStack(spacing: 8) {
-                    Text("MODO DE ACCESO (PROTOTIPO)")
+                    Text("INICIAR SESIÓN COMO")
                         .font(.system(size: 11, weight: .medium))
                         .tracking(1.2)
                         .foregroundStyle(.white.opacity(0.5))
@@ -60,6 +63,7 @@ struct LoginView: View {
                 VStack(spacing: 12) {
                     TextField("", text: $email, prompt: Text("Correo electrónico").foregroundStyle(.black.opacity(0.3)))
                         .textInputAutocapitalization(.never)
+                        .autocorrectionDisabled()
                         .keyboardType(.emailAddress)
                         .padding(14)
                         .background(Theme.subtleFill)
@@ -87,12 +91,17 @@ struct LoginView: View {
                         .padding(.trailing, 12)
                     }
 
-                    Button("Iniciar sesión") {
-                        onLogin(role)
+                    if let errorMessage {
+                        Label(errorMessage, systemImage: "exclamationmark.triangle.fill")
+                            .font(.system(size: 13, weight: .medium))
+                            .foregroundStyle(Theme.danger)
+                            .frame(maxWidth: .infinity, alignment: .leading)
                     }
-                    .buttonStyle(.iosPrimary)
 
-                    Button("¿Olvidaste tu contraseña?") { onLogin(role) }
+                    Button("Iniciar sesión") { submit() }
+                        .buttonStyle(.iosPrimary)
+
+                    Button("¿Olvidaste tu contraseña?") { showForgotPasswordAlert = true }
                         .font(.system(size: 14, weight: .medium))
                         .foregroundStyle(Theme.primary)
                 }
@@ -101,9 +110,7 @@ struct LoginView: View {
                 .padding(.horizontal, 20)
 
                 VStack(spacing: 8) {
-                    Button {
-                        onLogin(role)
-                    } label: {
+                    Button { submit() } label: {
                         ZStack {
                             RoundedRectangle(cornerRadius: 16, style: .continuous)
                                 .fill(.white.opacity(0.1))
@@ -122,11 +129,29 @@ struct LoginView: View {
                 Spacer(minLength: 20)
             }
         }
+        .alert("Recuperar contraseña", isPresented: $showForgotPasswordAlert) {
+            Button("Entendido", role: .cancel) {}
+        } message: {
+            Text("Contacta a tu Gerente General para que restablezca tu contraseña desde Administración.")
+        }
+    }
+
+    private func submit() {
+        errorMessage = onLogin(email, password)
     }
 
     private func roleButton(_ r: UserRole, label: String) -> some View {
         Button {
             role = r
+            errorMessage = nil
+            switch r {
+            case .general:
+                email = "alejandro@fuelcontrol.com"
+                password = "puma2026"
+            case .franchise:
+                email = "maria@fuelcontrol.com"
+                password = "turno123"
+            }
         } label: {
             Text(label)
                 .font(.system(size: 13, weight: .semibold))
@@ -140,5 +165,5 @@ struct LoginView: View {
 }
 
 #Preview {
-    LoginView(onLogin: { _ in })
+    LoginView(onLogin: { _, _ in nil })
 }

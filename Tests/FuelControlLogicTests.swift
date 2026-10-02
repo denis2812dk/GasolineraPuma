@@ -72,12 +72,36 @@ final class FuelControlLogicTests: XCTestCase {
         XCTAssertTrue(comparison.rows.contains { $0.id == id })
         XCTAssertEqual(general.franchise(id)?.value(for: .revPerGallon), 0)
         XCTAssertEqual(general.fuelTotals(for: id).reduce(0) { $0 + $1.gallons }, 0)
-        let manager = try XCTUnwrap(general.addManager(name: "Ana", email: "ANA@example.com"))
-        XCTAssertNil(general.addManager(name: "Ana 2", email: "ana@example.com"))
+        XCTAssertNil(general.addManager(name: "Ana", email: "ANA@example.com", password: "abc"))
+        let manager = try XCTUnwrap(general.addManager(name: "Ana", email: "ANA@example.com", password: "abcd"))
+        XCTAssertNil(general.addManager(name: "Ana 2", email: "ana@example.com", password: "abcd"))
         XCTAssertFalse(general.link(manager: UUID(), station: id))
         XCTAssertFalse(general.link(manager: manager, station: "missing"))
         XCTAssertTrue(general.link(manager: manager, station: id))
         XCTAssertEqual(general.manager(for: id)?.name, "Ana")
+    }
+
+    func testAuthenticationForBothRoles() throws {
+        let general = GeneralViewModel()
+        XCTAssertTrue(general.authenticateGeneral(email: " Alejandro@FuelControl.com ", password: "puma2026"))
+        XCTAssertFalse(general.authenticateGeneral(email: "alejandro@fuelcontrol.com", password: "wrong"))
+
+        // Seeded demo manager, already linked to f1.
+        let loggedIn = try XCTUnwrap(general.authenticateFranchise(email: "maria@fuelcontrol.com", password: "turno123"))
+        XCTAssertEqual(loggedIn.stationId, "f1")
+        XCTAssertEqual(loggedIn.name, "María López")
+        XCTAssertNil(general.authenticateFranchise(email: "maria@fuelcontrol.com", password: "wrong"))
+
+        // A manager created but not yet linked to a station cannot log in.
+        let unlinked = try XCTUnwrap(general.addManager(name: "Nuevo Gerente", email: "nuevo@fuelcontrol.com", password: "clave123"))
+        XCTAssertNil(general.authenticateFranchise(email: "nuevo@fuelcontrol.com", password: "clave123"))
+        let stationId = try XCTUnwrap(general.addStation(name: "Otra", zone: "Centro"))
+        XCTAssertTrue(general.link(manager: unlinked, station: stationId))
+        let afterLink = try XCTUnwrap(general.authenticateFranchise(email: "nuevo@fuelcontrol.com", password: "clave123"))
+        XCTAssertEqual(afterLink.stationId, stationId)
+
+        // The general account's email can't be reused for a manager login.
+        XCTAssertNil(general.addManager(name: "Impostor", email: "alejandro@fuelcontrol.com", password: "clave123"))
     }
 
     func testConsolidatedDashboardIncludesOnlyClosedSalesOnce() throws {
@@ -103,9 +127,11 @@ final class FuelControlLogicTests: XCTestCase {
         XCTAssertEqual(TankLevel(percentage: 50), .medium)
         XCTAssertEqual(TankLevel(percentage: 51), .optimal)
         let session = SessionViewModel()
-        session.login(.general)
+        session.login(role: .general, name: "Alejandro Rivas", email: "alejandro@fuelcontrol.com")
         XCTAssertEqual(session.role, .general)
+        XCTAssertEqual(session.accountName, "Alejandro Rivas")
         session.logout()
         XCTAssertNil(session.role)
+        XCTAssertEqual(session.accountName, "")
     }
 }

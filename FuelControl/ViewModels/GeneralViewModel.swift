@@ -1,6 +1,15 @@
 import SwiftUI
 import Observation
 
+/// A single login account for the Gerente General role. There is exactly one
+/// in this local prototype; stored here instead of as a `Manager` because the
+/// general manager isn't linked to any one station.
+struct GeneralAccount {
+    let name = "Alejandro Rivas"
+    let email = "alejandro@fuelcontrol.com"
+    let password = "puma2026"
+}
+
 @Observable final class GeneralViewModel {
     private var seeds: [Franchise]
     private var fuelSeeds: [String: [FuelTotal]] = [:]
@@ -8,10 +17,12 @@ import Observation
     private(set) var assignments: [String: UUID] = [:]
     private(set) var sucursales: [String: SucursalViewModel] = [:]
     private(set) var mapPositions: [String: MapPosition]
+    let generalAccount = GeneralAccount()
 
     init() {
         seeds = MockData.franchises
         mapPositions = MockData.franchiseMapPositions
+        seedDemoManagers()
         for franchise in seeds {
             // Local sample breakdown. Integer remainders preserve the source totals exactly.
             let regular = franchise.dailyGallons * 60 / 100
@@ -35,6 +46,16 @@ import Observation
             Tank(id: "\(id)-\($0.rawValue)", fuelType: $0, capacity: 10000, current: 6000,
                  temperature: 84, waterLevel: 0, lastReading: "Inicial", autonomyDays: 3)
         }
+    }
+    /// A couple of ready-to-use franchise manager logins so the app is
+    /// demoable immediately, without first visiting Administración.
+    private func seedDemoManagers() {
+        let maria = Manager(id: UUID(), name: "María López", email: "maria@fuelcontrol.com",
+                             password: "turno123", role: "Gerente de sucursal")
+        let juan = Manager(id: UUID(), name: "Juan García", email: "juan@fuelcontrol.com",
+                            password: "turno123", role: "Gerente de sucursal")
+        managers = [maria, juan]
+        assignments = ["f1": maria.id, "f2": juan.id]
     }
     func refreshDay() { sucursales.values.forEach { $0.ensureToday() } }
     func fuelTotals(for id: String? = nil) -> [FuelTotal] {
@@ -82,12 +103,14 @@ import Observation
         mapPositions[id] = MapPosition(x: CGFloat(35 + (index * 47) % 320), y: CGFloat(35 + (index * 31) % 170))
         return id
     }
-    @discardableResult func addManager(name: String, email: String) -> UUID? {
+    @discardableResult func addManager(name: String, email: String, password: String) -> UUID? {
         let name = name.trimmingCharacters(in: .whitespacesAndNewlines)
         let email = email.trimmingCharacters(in: .whitespacesAndNewlines).lowercased()
         guard !name.isEmpty, email.contains("@"), !email.hasSuffix("@"), !email.hasPrefix("@"),
-              !managers.contains(where: { $0.email == email }) else { return nil }
-        let manager = Manager(id: UUID(), name: name, email: email, role: "Gerente de sucursal")
+              password.count >= 4,
+              !managers.contains(where: { $0.email == email }),
+              email != generalAccount.email.lowercased() else { return nil }
+        let manager = Manager(id: UUID(), name: name, email: email, password: password, role: "Gerente de sucursal")
         managers.append(manager)
         return manager.id
     }
@@ -95,6 +118,22 @@ import Observation
         guard managers.contains(where: { $0.id == manager }), seeds.contains(where: { $0.id == station }) else { return false }
         assignments[station] = manager
         return true
+    }
+
+    /// Returns `true` if the credentials match the single Gerente General account.
+    func authenticateGeneral(email: String, password: String) -> Bool {
+        let clean = email.trimmingCharacters(in: .whitespacesAndNewlines).lowercased()
+        return clean == generalAccount.email.lowercased() && password == generalAccount.password
+    }
+
+    /// Returns the matching manager's station + display name, if the
+    /// credentials match a registered Gerente de Sucursal that is linked to
+    /// a station. A manager created but not yet linked cannot log in yet.
+    func authenticateFranchise(email: String, password: String) -> (stationId: String, name: String)? {
+        let clean = email.trimmingCharacters(in: .whitespacesAndNewlines).lowercased()
+        guard let manager = managers.first(where: { $0.email == clean && $0.password == password }) else { return nil }
+        guard let entry = assignments.first(where: { $0.value == manager.id }) else { return nil }
+        return (entry.key, manager.name)
     }
 }
 
@@ -104,6 +143,7 @@ import Observation
     var zone = ""
     var managerName = ""
     var email = ""
+    var password = ""
     var selectedManager: UUID?
     var selectedStation = ""
     var message: String?
@@ -117,12 +157,13 @@ import Observation
         message = "Estación registrada con tres tanques al 60% y ventas en cero."
     }
     func addManager() {
-        guard let id = general.addManager(name: managerName, email: email) else {
-            message = "Escribe un nombre y correo válido que no esté registrado."; return
+        guard let id = general.addManager(name: managerName, email: email, password: password) else {
+            message = "Escribe nombre, correo válido (no registrado) y contraseña de al menos 4 caracteres."
+            return
         }
         selectedManager = id
-        managerName = ""; email = ""
-        message = "Gerente creado. Ya puedes vincularlo a una sucursal."
+        managerName = ""; email = ""; password = ""
+        message = "Gerente creado. Ya puede iniciar sesión una vez lo vincules a una sucursal."
     }
     func link() {
         guard let manager = selectedManager, general.link(manager: manager, station: selectedStation) else {

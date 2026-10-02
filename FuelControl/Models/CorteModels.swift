@@ -23,6 +23,9 @@ struct Manager: Identifiable {
     let id: UUID
     let name: String
     let email: String
+    /// Plaintext on purpose: local-only demo data for a university prototype,
+    /// never sent over a network.
+    let password: String
     let role: String
 }
 

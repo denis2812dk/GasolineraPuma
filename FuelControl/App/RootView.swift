@@ -9,9 +9,10 @@ struct RootView: View {
         Group {
             switch session.role {
             case .none:
-                LoginView(onLogin: session.login)
+                LoginView(onLogin: attemptLogin)
             case .general:
-                GeneralTabView(general: general, onLogout: session.logout)
+                GeneralTabView(general: general, accountName: session.accountName,
+                                accountEmail: session.accountEmail, onLogout: session.logout)
             case .franchise:
                 if let sucursal = general.sucursales[session.franchiseId] {
                     FranchiseTabView(general: general, sucursal: sucursal, onLogout: session.logout)
@@ -28,6 +29,19 @@ struct RootView: View {
                 catch { break }
             }
         }
+    }
+
+    /// Returns an error message to show inline, or `nil` on success.
+    private func attemptLogin(email: String, password: String) -> String? {
+        if general.authenticateGeneral(email: email, password: password) {
+            session.login(role: .general, name: general.generalAccount.name, email: general.generalAccount.email)
+            return nil
+        }
+        if let match = general.authenticateFranchise(email: email, password: password) {
+            session.login(role: .franchise, franchiseId: match.stationId, name: match.name, email: email)
+            return nil
+        }
+        return "Correo o contraseña incorrectos."
     }
 }
 

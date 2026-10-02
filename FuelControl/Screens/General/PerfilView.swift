@@ -1,7 +1,15 @@
 import SwiftUI
 
 struct PerfilView: View {
+    let name: String
+    let email: String
     let onLogout: () -> Void
+
+    private var initials: String {
+        let parts = name.split(separator: " ")
+        let letters = parts.prefix(2).compactMap { $0.first }
+        return letters.isEmpty ? "?" : String(letters).uppercased()
+    }
 
     @State private var notifAlerts = true
     @State private var notifInventory = true
@@ -31,10 +39,10 @@ struct PerfilView: View {
                     Circle()
                         .fill(LinearGradient(colors: [Theme.primary, Theme.primary.opacity(0.75)], startPoint: .top, endPoint: .bottom))
                         .frame(width: 64, height: 64)
-                        .overlay(Text("AR").font(.system(size: 24, weight: .bold)).foregroundStyle(.white))
+                        .overlay(Text(initials).font(.system(size: 24, weight: .bold)).foregroundStyle(.white))
                     VStack(alignment: .leading, spacing: 4) {
-                        Text("Alejandro Rivas").font(.headline)
-                        Text("alejandro@fuelcontrol.com").font(.caption).foregroundStyle(Theme.label2)
+                        Text(name).font(.headline)
+                        Text(email).font(.caption).foregroundStyle(Theme.label2)
                         Text("Gerente General")
                             .font(.caption2.weight(.semibold))
                             .foregroundStyle(Theme.primary)
@@ -117,5 +125,5 @@ struct PerfilView: View {
 }
 
 #Preview {
-    PerfilView(onLogout: {})
+    PerfilView(name: "Alejandro Rivas", email: "alejandro@fuelcontrol.com", onLogout: {})
 }

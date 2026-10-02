@@ -5,6 +5,12 @@ struct AdministracionView: View {
     var body: some View {
         @Bindable var model = viewModel
         Form {
+            Section("Cuentas de prueba") {
+                LabeledContent("Gerente General", value: viewModel.general.generalAccount.email)
+                LabeledContent("Contraseña", value: viewModel.general.generalAccount.password)
+                Text("Las cuentas de Gerente de Sucursal creadas aquí inician sesión con su propio correo y contraseña, una vez vinculadas a una estación.")
+                    .font(.caption).foregroundStyle(.secondary)
+            }
             Section("Registrar nueva estación de servicio") {
                 TextField("Nombre de estación", text: $model.stationName)
                 TextField("Zona", text: $model.zone)
@@ -14,8 +20,11 @@ struct AdministracionView: View {
                 TextField("Nombre completo", text: $model.managerName)
                 TextField("Correo electrónico", text: $model.email)
                     .keyboardType(.emailAddress).textInputAutocapitalization(.never).autocorrectionDisabled()
+                SecureField("Contraseña (mín. 4 caracteres)", text: $model.password)
                 LabeledContent("Rol", value: "Gerente de sucursal")
                 Button("Crear gerente") { viewModel.addManager() }
+                Text("Con esta contraseña y el correo, el gerente podrá iniciar sesión una vez vinculado a una sucursal.")
+                    .font(.caption).foregroundStyle(.secondary)
             }
             Section("Vincular gerente a sucursal") {
                 Picker("Gerente", selection: $model.selectedManager) {
@@ -40,7 +49,7 @@ struct AdministracionView: View {
                     VStack(alignment: .leading) {
                         Text(manager.name)
                         Text(manager.email).font(.caption)
-                        Text(manager.role).font(.caption).foregroundStyle(.secondary)
+                        Text("Contraseña: \(manager.password)").font(.caption).foregroundStyle(.secondary)
                     }
                 }
             }
