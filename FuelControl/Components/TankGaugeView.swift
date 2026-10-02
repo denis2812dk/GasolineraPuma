@@ -6,21 +6,14 @@ struct TankGaugeView: View {
     var width: CGFloat = 22
     var height: CGFloat = 90
 
-    private var isLow: Bool { percentage <= 20 }
-    private var isCritical: Bool { percentage <= 10 }
-
-    private var fillColor: Color {
-        if isCritical { return Theme.danger }
-        if isLow { return Theme.accent }
-        return fuelType.color
-    }
+    private var fillColor: Color { TankLevel(percentage: percentage).color }
 
     var body: some View {
         ZStack(alignment: .bottom) {
             Color(hex: "F1F1F1")
             Rectangle()
                 .fill(fillColor)
-                .frame(height: height * CGFloat(percentage) / 100)
+                .frame(height: height * CGFloat(min(100, max(0, percentage))) / 100)
                 .animation(.easeInOut(duration: 0.5), value: percentage)
 
             ForEach([0.75, 0.5, 0.25] as [Double], id: \.self) { tick in

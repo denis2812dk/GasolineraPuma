@@ -1,10 +1,5 @@
 import SwiftUI
 
-enum UserRole {
-    case franchise
-    case general
-}
-
 struct LoginView: View {
     let onLogin: (UserRole) -> Void
 
@@ -96,7 +91,7 @@ struct LoginView: View {
                     }
                     .buttonStyle(.iosPrimary)
 
-                    Button("¿Olvidaste tu contraseña?") {}
+                    Button("¿Olvidaste tu contraseña?") { onLogin(role) }
                         .font(.system(size: 14, weight: .medium))
                         .foregroundStyle(Theme.primary)
                 }

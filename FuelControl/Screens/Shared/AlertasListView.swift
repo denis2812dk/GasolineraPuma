@@ -1,20 +1,7 @@
 import SwiftUI
 
 struct AlertasListView: View {
-    let alerts: [AlertItem]
-
-    @State private var filter: String = "todas"
-    private let categories = ["todas", "críticas", "inventario", "merma", "turnos", "pipas"]
-
-    private var filtered: [AlertItem] {
-        alerts.filter { alert in
-            switch filter {
-            case "todas": return true
-            case "críticas": return alert.severity == .critical
-            default: return alert.category.rawValue == filter
-            }
-        }
-    }
+    @State var viewModel: AlertsViewModel
 
     var body: some View {
         ScrollView {
@@ -24,19 +11,19 @@ struct AlertasListView: View {
 
                 ScrollView(.horizontal, showsIndicators: false) {
                     HStack(spacing: 8) {
-                        ForEach(categories, id: \.self) { cat in
+                        ForEach(viewModel.categories, id: \.self) { cat in
                             Button {
-                                filter = cat
+                                viewModel.filter = cat
                             } label: {
                                 Text(cat.capitalized)
-                                    .pillChip(isSelected: filter == cat)
+                                    .pillChip(isSelected: viewModel.filter == cat)
                             }
                             .buttonStyle(.plain)
                         }
                     }
                 }
 
-                if filtered.isEmpty {
+                if viewModel.filtered.isEmpty {
                     VStack(spacing: 12) {
                         ZStack {
                             Circle().fill(Theme.background).frame(width: 64, height: 64)
@@ -54,7 +41,7 @@ struct AlertasListView: View {
                     .padding(.top, 60)
                 } else {
                     VStack(spacing: 12) {
-                        ForEach(filtered) { alert in
+                        ForEach(viewModel.filtered) { alert in
                             AlertCardView(alert: alert)
                         }
                     }
@@ -65,8 +52,4 @@ struct AlertasListView: View {
         }
         .background(Theme.background)
     }
-}
-
-#Preview {
-    AlertasListView(alerts: MockData.franchiseAlerts)
 }

@@ -5,7 +5,7 @@ struct PerfilView: View {
 
     @State private var notifAlerts = true
     @State private var notifInventory = true
-    @State private var notifTurnos = false
+    @State private var notifCortes = false
     @State private var notifPipas = true
 
     private struct NotifRow: Identifiable {
@@ -19,7 +19,7 @@ struct PerfilView: View {
         [
             NotifRow(id: "alerts", label: "Alertas críticas", sub: "Inventario, merma, equipos", binding: $notifAlerts),
             NotifRow(id: "inventory", label: "Inventario", sub: "Niveles de tanque y recepciones", binding: $notifInventory),
-            NotifRow(id: "turnos", label: "Turnos", sub: "Aperturas y cierres de turno", binding: $notifTurnos),
+            NotifRow(id: "cortes", label: "Cortes", sub: "Registro y cierre de cortes", binding: $notifCortes),
             NotifRow(id: "pipas", label: "Pipas", sub: "Diferencias en recepciones", binding: $notifPipas),
         ]
     }

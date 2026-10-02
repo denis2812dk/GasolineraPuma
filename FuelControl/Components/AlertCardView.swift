@@ -32,9 +32,11 @@ struct AlertCardView: View {
                     .fixedSize(horizontal: false, vertical: true)
                     .padding(.leading, 22)
 
-                FuelChip(type: alert.category.relatedFuelType)
-                    .padding(.leading, 22)
-                    .padding(.top, 2)
+                if let fuel = alert.fuelType {
+                    FuelChip(type: fuel)
+                        .padding(.leading, 22)
+                        .padding(.top, 2)
+                }
             }
             .padding(12)
         }

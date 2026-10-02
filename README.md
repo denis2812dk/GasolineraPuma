@@ -1,51 +1,56 @@
-# FuelControl (iOS / SwiftUI)
+# FuelControl — SwiftUI, iOS 17+
 
-Native iOS port of the `FuelControl iOS App Design` Figma Make prototype (React + Tailwind + recharts).
-Built with **SwiftUI** and **Swift Charts**, targeting **iOS 17+**.
+Aplicación local con SwiftUI, Charts y Observation. No usa red, backend, autenticación real ni dependencias externas. El estado se conserva durante la ejecución de la app y se reinicia al volver a lanzarla.
 
-## Opening the project
+## Abrir y compilar
 
-This project was generated on Windows (no Xcode/simulator available here to build it), so it has
-not been compiled yet. To run it:
+Abre `FuelControl.xcodeproj` en Xcode 15 o posterior, selecciona el esquema FuelControl y un simulador iPhone con iOS 17 o posterior. Para un dispositivo físico, configura tu equipo de firma.
 
-1. Copy the `FuelControlApp` folder to a Mac.
-2. Open `FuelControl.xcodeproj` in Xcode 16 or later.
-3. Select the `FuelControl` scheme and an iPhone simulator (or a Mac with Xcode 16+ supports iOS 17
-   simulators out of the box).
-4. Build & run (⌘R).
+Desde macOS:
 
-If Xcode reports any build settings it wants to "upgrade" on first open, accept — that's normal for
-a hand-authored `project.pbxproj`.
+```sh
+cd FuelControlApp
+xcodebuild -project FuelControl.xcodeproj -scheme FuelControl -sdk iphonesimulator -configuration Debug CODE_SIGNING_ALLOWED=NO build
+swift test
+```
 
-## Structure
+`Package.swift` permite probar los mismos modelos y ViewModels con XCTest en macOS 14+. No agrega dependencias al target iOS.
 
-- `FuelControl/FuelControlApp.swift` — `@main` app entry point.
-- `FuelControl/App/RootView.swift` — switches between the login screen and the two role-based tab
-  flows, mirroring the original prototype's `App.tsx` state machine.
-- `FuelControl/Models/FuelModels.swift` — Swift types mirroring `data.ts` (`Tank`, `Shift`,
-  `Franchise`, `AlertItem`, etc.), with color/label logic moved onto the enums.
-- `FuelControl/Models/MockData.swift` — the same sample data as the prototype's `data.ts`, ready to
-  be swapped for a real networking layer later.
-- `FuelControl/Theme/` — color tokens (`Theme.swift`), the `.ios-card` / primary-button / pill-chip
-  styling (`ViewModifiers.swift`), and number formatting (`Formatters.swift`).
-- `FuelControl/Components/` — reusable views: `KPICard`, `FuelChip`, `StatusBadge`, `TankGaugeView`,
-  `AlertCardView`, `ChartCardView`, `SparklineView`, `SegmentedControlView`.
-- `FuelControl/Screens/Auth/LoginView.swift` — login screen with the franchise/general role toggle.
-- `FuelControl/Screens/Franchise/` — the franchise manager flow: Inicio, Ventas, Tanques, Turnos,
-  shift detail, and the tab container.
-- `FuelControl/Screens/General/` — the general manager flow: Resumen, Franquicias (list + map),
-  Comparar, Perfil, franchise drill-down, and the tab container.
-- `FuelControl/Screens/Shared/AlertasListView.swift` — the alerts screen, reused by both roles with
-  different data sets.
+Esta modificación se realizó en Windows, sin Swift, Xcode ni simulador. Se ejecutó la comprobación estática con `node FuelControlApp/validate-project.mjs`; la compilación iOS, los XCTest y la revisión visual quedan pendientes de ejecutarse en macOS.
 
-## Notes / follow-ups
+## Arquitectura
 
-- All data is static mock data (`MockData.swift`), same as the Figma prototype. Swap it for a real
-  API client when one exists.
-- Charts use native **Swift Charts** (`import Charts`), which requires **iOS 17** for the donut/pie
-  charts (`SectorMark`). If you need to support iOS 16, the payment-method and fuel-mix donut charts
-  would need a custom-drawn replacement.
-- Navigation uses `NavigationStack` + `navigationDestination(for:)` per tab, so pushing a franchise
-  detail and then a shift detail from within it works like the original app's drill-down.
-- The bundle identifier is a placeholder (`com.fuelcontrol.app`) — change it in the target's Signing
-  & Capabilities tab before running on a device.
+- `App/RootView.swift` conserva SessionViewModel y GeneralViewModel durante toda la ejecución.
+- `ViewModels/SessionViewModel.swift`: rol, sucursal activa y acciones de ingreso/salida visual.
+- `ViewModels/GeneralViewModel.swift`: sucursales, gerentes, vínculos, posiciones de mapa y consolidación nacional. Incluye los ViewModels de Resumen, Franquicias, Comparar, Administración y detalle de sucursal.
+- `ViewModels/SucursalViewModel.swift`: tanques, historial de cortes por día, validación, registros y cierre. CortesViewModel y CorteDetailViewModel exponen los intents de cada pantalla.
+- `ViewModels/ScreenViewModels.swift`: Inicio, Ventas, Tanques y Alertas.
+- `Models/CorteModels.swift`: Manager, Corte, CorteTurno, MovementCategory, PumpEntry y los tres niveles de tanque.
+- Las vistas no consultan MockData. GeneralViewModel utiliza los mocks únicamente para inicializar el estado local.
+
+## Reglas implementadas
+
+- Dos cortes por fecha local y sucursal: Matutino y Vespertino / Nocturno. Se crean de forma idempotente; la app actualiza la fecha al volver al primer plano y periódicamente mientras está abierta. Los anteriores se conservan en memoria.
+- Cada corte contiene seis bombas numeradas del 1 al 6. Cada bomba registra combustible, ventas, compras/recepción, pérdidas/daños y motivo de pérdida.
+- Los tres campos de galones son obligatorios: cero significa ausencia de movimiento; vacío no equivale a cero. Se aceptan punto o coma decimal y cantidades finitas de 0 a 1,000,000.
+- Cambiar cualquier campo invalida la confirmación individual de esa bomba. El ViewModel solo permite cerrar cuando las seis están registradas y válidas.
+- El cierre guarda la fecha y bloquea toda modificación también en el ViewModel. El resumen muestra totales por combustible y total general de cada categoría, sin mezclar ventas con entradas de inventario.
+- Las ventas de cortes abiertos no se incluyen en los dashboards. Las cerradas se suman una sola vez a los datos iniciales de su sucursal; ingresos calculados con precios locales de ejemplo: Regular $3.75, Súper $4.25 y Diésel $3.50 por galón.
+- Los datos iniciales de ventas se desglosan localmente por combustible conservando exactamente los totales del arreglo de sucursales. Son datos de demostración, no mediciones históricas reales.
+- Registrar una estación crea tres tanques de 10,000 galones al 60%, dos cortes y métricas de ventas en cero. Aparece inmediatamente en lista, mapa, filtro nacional y opciones del comparador.
+- Alta de gerente con nombre, correo único y rol Gerente de sucursal. El vínculo asocia el ID de una sucursal al ID del gerente; guardar otro vínculo reemplaza al gerente anterior de esa sucursal.
+- Tanques: Crítico ≤20%, Medio >20% y ≤50%, Óptimo >50%. Los tanques representan lecturas locales; registrar un corte no reemplaza una lectura física.
+- Sin gestión de personal ni horarios. Perfil y notificaciones mantienen acciones decorativas.
+
+## Verificación manual en simulador
+
+1. Entrar como Gerente General y registrar una estación. Buscarla en la lista y mapa, seleccionarla en Resumen y Comparar; verificar cero ventas y ausencia de divisiones por cero.
+2. Crear un gerente y vincularlo. Abrir la nueva estación y verificar nombre, zona y gerente correctos.
+3. Abrir Cortes: verificar exactamente dos. Intentar cerrar sin registros, con cinco bombas o con un dato inválido; el cierre debe permanecer bloqueado.
+4. Completar y registrar seis bombas, incluyendo ceros y decimales. Modificar una registrada: debe requerir registrarla de nuevo.
+5. Cerrar el corte, volver a abrirlo y verificar solo lectura, seis bombas y totales por combustible/categoría.
+6. Volver al resumen nacional y a la sucursal; verificar que incorporan las ventas cerradas una sola vez.
+7. Cambiar de rol mediante cerrar sesión y volver a entrar; los datos deben mantenerse hasta finalizar la app.
+8. Probar los tres niveles de tanques y navegación desde ambos roles.
+
+Los XCTest cubren cambio de día, dos cortes únicos, seis registros obligatorios, invalidación, inmutabilidad del cierre, valores inválidos, altas y vínculos, propagación al comparador/mapa, consolidación y umbrales de tanque.

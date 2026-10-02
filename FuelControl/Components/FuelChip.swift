@@ -19,12 +19,6 @@ struct StatusBadge: View {
     let color: Color
     let backgroundColor: Color
 
-    init(shiftStatus: ShiftStatus) {
-        label = shiftStatus.label
-        color = shiftStatus.color
-        backgroundColor = shiftStatus.backgroundColor
-    }
-
     init(franchiseStatus: FranchiseStatus) {
         label = franchiseStatus.label
         color = franchiseStatus.color

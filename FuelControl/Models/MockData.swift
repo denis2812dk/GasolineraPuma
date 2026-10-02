@@ -1,25 +1,25 @@
 import SwiftUI
 
 /// Static sample data mirroring the original Figma prototype's `data.ts`.
-/// Swap this out for a real data source / networking layer when available.
+/// Used only to seed local, in-memory ViewModels.
 enum MockData {
 
     // MARK: - Franchise "Santa Ana Centro" (f1)
 
     static let tanks: [Tank] = [
         Tank(id: "t1", fuelType: .regular, capacity: 10000, current: 6500, temperature: 85, waterLevel: 0.1, lastReading: "16:32", autonomyDays: 3.2),
-        Tank(id: "t2", fuelType: .especial, capacity: 8000, current: 1440, temperature: 84, waterLevel: 0.0, lastReading: "16:32", autonomyDays: 0.9),
+        Tank(id: "t2", fuelType: .superFuel, capacity: 8000, current: 1440, temperature: 84, waterLevel: 0.0, lastReading: "16:32", autonomyDays: 0.9),
         Tank(id: "t3", fuelType: .diesel, capacity: 12000, current: 9360, temperature: 83, waterLevel: 0.2, lastReading: "16:30", autonomyDays: 5.1),
     ]
 
     static let pumps: [Pump] = [
         Pump(id: "p1", number: 1, fuels: [
             PumpFuelSale(type: .regular, gallons: 312, amount: 1170),
-            PumpFuelSale(type: .especial, gallons: 95, amount: 404),
+            PumpFuelSale(type: .superFuel, gallons: 95, amount: 404),
         ], flagged: nil),
         Pump(id: "p2", number: 2, fuels: [
             PumpFuelSale(type: .regular, gallons: 298, amount: 1118),
-            PumpFuelSale(type: .especial, gallons: 102, amount: 434),
+            PumpFuelSale(type: .superFuel, gallons: 102, amount: 434),
         ], flagged: nil),
         Pump(id: "p3", number: 3, fuels: [
             PumpFuelSale(type: .regular, gallons: 325, amount: 1219),
@@ -30,51 +30,18 @@ enum MockData {
             PumpFuelSale(type: .diesel, gallons: 195, amount: 683),
         ], flagged: nil),
         Pump(id: "p5", number: 5, fuels: [
-            PumpFuelSale(type: .especial, gallons: 88, amount: 374),
+            PumpFuelSale(type: .superFuel, gallons: 88, amount: 374),
         ], flagged: nil),
         Pump(id: "p6", number: 6, fuels: [
             PumpFuelSale(type: .regular, gallons: 42, amount: 158),
-            PumpFuelSale(type: .especial, gallons: 18, amount: 77),
+            PumpFuelSale(type: .superFuel, gallons: 18, amount: 77),
             PumpFuelSale(type: .diesel, gallons: 35, amount: 123),
         ], flagged: "Venta inusualmente baja"),
     ]
 
-    static let shifts: [Shift] = [
-        Shift(
-            id: "s1", number: 1, employee: "Juan García", status: .cerrado,
-            startTime: "06:00", endTime: "14:00",
-            readings: [
-                HoseReading(hoseId: "B1-Reg", fuelType: .regular, initial: 45230, final: 45542, gallons: 312),
-                HoseReading(hoseId: "B1-Esp", fuelType: .especial, initial: 12100, final: 12195, gallons: 95),
-                HoseReading(hoseId: "B2-Reg", fuelType: .regular, initial: 38920, final: 39218, gallons: 298),
-                HoseReading(hoseId: "B2-Esp", fuelType: .especial, initial: 9840, final: 9942, gallons: 102),
-                HoseReading(hoseId: "B3-Reg", fuelType: .regular, initial: 52100, final: 52425, gallons: 325),
-                HoseReading(hoseId: "B3-Die", fuelType: .diesel, initial: 28400, final: 28588, gallons: 188),
-            ],
-            gallonsSold: 1320, cashExpected: 4986, cashDeclared: 4971
-        ),
-        Shift(
-            id: "s2", number: 2, employee: "María López", status: .abierto,
-            startTime: "14:00", endTime: nil,
-            readings: [
-                HoseReading(hoseId: "B1-Reg", fuelType: .regular, initial: 45542, final: 45730, gallons: 188),
-                HoseReading(hoseId: "B1-Esp", fuelType: .especial, initial: 12195, final: 12248, gallons: 53),
-                HoseReading(hoseId: "B4-Reg", fuelType: .regular, initial: 61200, final: 61490, gallons: 290),
-                HoseReading(hoseId: "B4-Die", fuelType: .diesel, initial: 19500, final: 19695, gallons: 195),
-            ],
-            gallonsSold: 726, cashExpected: 2792, cashDeclared: 2792
-        ),
-        Shift(
-            id: "s3", number: 3, employee: "Carlos Méndez", status: .pendiente,
-            startTime: "22:00", endTime: nil,
-            readings: [], gallonsSold: 0, cashExpected: 0, cashDeclared: 0
-        ),
-    ]
-
     static let franchiseAlerts: [AlertItem] = [
-        AlertItem(id: "a1", severity: .critical, category: .inventario, title: "Tanque Especial al 18%", description: "El tanque de Especial está por debajo del nivel mínimo aceptado (20%). Autonomía estimada: 0.9 días. Programar recepción urgente.", timeAgo: "hace 2h"),
+        AlertItem(id: "a1", severity: .critical, category: .inventario, title: "Tanque Súper al 18%", description: "El tanque de Súper está por debajo del nivel mínimo aceptado (20%). Autonomía estimada: 0.9 días. Programar recepción urgente.", timeAgo: "hace 2h"),
         AlertItem(id: "a2", severity: .warning, category: .merma, title: "Venta inusualmente baja — Bomba 6", description: "La Bomba 6 registra ventas un 68% por debajo del promedio de las últimas 4 horas. Posible falla en el dispensador.", timeAgo: "hace 45 min"),
-        AlertItem(id: "a3", severity: .info, category: .turnos, title: "Turno 3 pendiente de apertura", description: "El Turno 3 inicia a las 22:00. Carlos Méndez debe registrar la apertura antes del horario de inicio.", timeAgo: "hace 20 min"),
     ]
 
     static let inventoryRec = InventoryReconciliation(
@@ -86,29 +53,29 @@ enum MockData {
     static let receptions: [Reception] = [
         Reception(id: "r1", date: "25 sep 2026", fuelType: .regular, invoiced: 2000, received: 1985),
         Reception(id: "r2", date: "22 sep 2026", fuelType: .diesel, invoiced: 3000, received: 2994),
-        Reception(id: "r3", date: "18 sep 2026", fuelType: .especial, invoiced: 1500, received: 1492),
+        Reception(id: "r3", date: "18 sep 2026", fuelType: .superFuel, invoiced: 1500, received: 1492),
     ]
 
     // MARK: - Chart data
 
     static let hourlySalesData: [HourlySales] = [
-        HourlySales(hour: "06", regular: 120, especial: 40, diesel: 30),
-        HourlySales(hour: "07", regular: 180, especial: 60, diesel: 45),
-        HourlySales(hour: "08", regular: 320, especial: 110, diesel: 80),
-        HourlySales(hour: "09", regular: 410, especial: 140, diesel: 100),
-        HourlySales(hour: "10", regular: 390, especial: 130, diesel: 95),
-        HourlySales(hour: "11", regular: 450, especial: 150, diesel: 110),
-        HourlySales(hour: "12", regular: 480, especial: 160, diesel: 115),
-        HourlySales(hour: "13", regular: 520, especial: 175, diesel: 125),
-        HourlySales(hour: "14", regular: 490, especial: 165, diesel: 120),
-        HourlySales(hour: "15", regular: 430, especial: 145, diesel: 105),
-        HourlySales(hour: "16", regular: 520, especial: 175, diesel: 125),
-        HourlySales(hour: "17", regular: 610, especial: 205, diesel: 145),
-        HourlySales(hour: "18", regular: 640, especial: 215, diesel: 155),
-        HourlySales(hour: "19", regular: 580, especial: 195, diesel: 140),
-        HourlySales(hour: "20", regular: 520, especial: 175, diesel: 125),
-        HourlySales(hour: "21", regular: 440, especial: 150, diesel: 105),
-        HourlySales(hour: "22", regular: 320, especial: 110, diesel: 80),
+        HourlySales(hour: "06", regular: 120, superFuel: 40, diesel: 30),
+        HourlySales(hour: "07", regular: 180, superFuel: 60, diesel: 45),
+        HourlySales(hour: "08", regular: 320, superFuel: 110, diesel: 80),
+        HourlySales(hour: "09", regular: 410, superFuel: 140, diesel: 100),
+        HourlySales(hour: "10", regular: 390, superFuel: 130, diesel: 95),
+        HourlySales(hour: "11", regular: 450, superFuel: 150, diesel: 110),
+        HourlySales(hour: "12", regular: 480, superFuel: 160, diesel: 115),
+        HourlySales(hour: "13", regular: 520, superFuel: 175, diesel: 125),
+        HourlySales(hour: "14", regular: 490, superFuel: 165, diesel: 120),
+        HourlySales(hour: "15", regular: 430, superFuel: 145, diesel: 105),
+        HourlySales(hour: "16", regular: 520, superFuel: 175, diesel: 125),
+        HourlySales(hour: "17", regular: 610, superFuel: 205, diesel: 145),
+        HourlySales(hour: "18", regular: 640, superFuel: 215, diesel: 155),
+        HourlySales(hour: "19", regular: 580, superFuel: 195, diesel: 140),
+        HourlySales(hour: "20", regular: 520, superFuel: 175, diesel: 125),
+        HourlySales(hour: "21", regular: 440, superFuel: 150, diesel: 105),
+        HourlySales(hour: "22", regular: 320, superFuel: 110, diesel: 80),
     ]
 
     static let paymentData: [PaymentMethod] = [
@@ -142,7 +109,7 @@ enum MockData {
 
     static let fuelMixData: [FuelMixSlice] = [
         FuelMixSlice(name: "Regular", value: 32400, color: Theme.ok),
-        FuelMixSlice(name: "Especial", value: 9800, color: Theme.danger),
+        FuelMixSlice(name: "Súper", value: 9800, color: Theme.danger),
         FuelMixSlice(name: "Diésel", value: 6700, color: Color(hex: "5F6368")),
     ]
 
@@ -171,7 +138,6 @@ enum MockData {
     static let generalAlerts: [AlertItem] = [
         AlertItem(id: "ga1", severity: .critical, category: .inventario, title: "Quezaltepeque: Tanque Regular al 12%", description: "Nivel crítico. Autonomía estimada: 0.6 días. Recepción urgente requerida.", timeAgo: "hace 1h"),
         AlertItem(id: "ga2", severity: .critical, category: .merma, title: "San Marcos: Merma 1.8% fuera de tolerancia", description: "Supera el límite máximo permitido (0.8%). Requiere auditoría inmediata del inventario.", timeAgo: "hace 3h"),
-        AlertItem(id: "ga3", severity: .critical, category: .turnos, title: "Antiguo Cuscatlán: Turno sin cerrar", description: "Turno 1 lleva más de 8 horas activo sin cierre registrado. Se requiere intervención.", timeAgo: "hace 4h"),
         AlertItem(id: "ga4", severity: .warning, category: .inventario, title: "Las Américas: Tanque Diésel al 22%", description: "Nivel de Diésel cercano al límite mínimo. Programar recepción en las próximas 24h.", timeAgo: "hace 2h"),
         AlertItem(id: "ga5", severity: .warning, category: .pipas, title: "Soyapango: Diferencia en recepción", description: "Diferencia de 45 galones entre facturado (3,000) y recibido (2,955). Revisar acta de recepción.", timeAgo: "hace 6h"),
         AlertItem(id: "ga6", severity: .info, category: .merma, title: "Colonia Escalón: Merma en límite", description: "La merma acumulada del mes alcanzó 0.6%, acercándose al umbral de alerta (0.8%).", timeAgo: "hace 5h"),

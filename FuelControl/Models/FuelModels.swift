@@ -2,7 +2,7 @@ import SwiftUI
 
 enum FuelType: String, Codable, CaseIterable, Identifiable {
     case regular
-    case especial
+    case superFuel
     case diesel
 
     var id: String { rawValue }
@@ -10,7 +10,7 @@ enum FuelType: String, Codable, CaseIterable, Identifiable {
     var label: String {
         switch self {
         case .regular: return "Regular"
-        case .especial: return "Especial"
+        case .superFuel: return "Súper"
         case .diesel: return "Diésel"
         }
     }
@@ -18,7 +18,7 @@ enum FuelType: String, Codable, CaseIterable, Identifiable {
     var color: Color {
         switch self {
         case .regular: return Color(hex: "1E8E3E")
-        case .especial: return Color(hex: "D93025")
+        case .superFuel: return Color(hex: "D93025")
         case .diesel: return Color(hex: "5F6368")
         }
     }
@@ -26,7 +26,7 @@ enum FuelType: String, Codable, CaseIterable, Identifiable {
     var backgroundColor: Color {
         switch self {
         case .regular: return Color(hex: "E8F5E9")
-        case .especial: return Color(hex: "FDECEA")
+        case .superFuel: return Color(hex: "FDECEA")
         case .diesel: return Color(hex: "F1F3F4")
         }
     }
@@ -39,9 +39,9 @@ enum FranchiseStatus: String, Codable {
 
     var label: String {
         switch self {
-        case .ok: return "Activa"
-        case .warning: return "Atención"
-        case .critical: return "Crítica"
+        case .ok: return "Óptimo"
+        case .warning: return "Medio"
+        case .critical: return "Crítico"
         }
     }
 
@@ -58,36 +58,6 @@ enum FranchiseStatus: String, Codable {
         case .ok: return Color(hex: "E8F5E9")
         case .warning: return Color(hex: "FFF3E0")
         case .critical: return Color(hex: "FDECEA")
-        }
-    }
-}
-
-enum ShiftStatus: String, Codable {
-    case abierto
-    case cerrado
-    case pendiente
-
-    var label: String {
-        switch self {
-        case .abierto: return "Abierto"
-        case .cerrado: return "Cerrado"
-        case .pendiente: return "Pendiente"
-        }
-    }
-
-    var color: Color {
-        switch self {
-        case .abierto: return Color(hex: "1E8E3E")
-        case .cerrado: return Color(hex: "5F6368")
-        case .pendiente: return Color(hex: "F28C28")
-        }
-    }
-
-    var backgroundColor: Color {
-        switch self {
-        case .abierto: return Color(hex: "E8F5E9")
-        case .cerrado: return Color(hex: "F1F3F4")
-        case .pendiente: return Color(hex: "FFF3E0")
         }
     }
 }
@@ -117,7 +87,7 @@ enum AlertSeverity: String, Codable {
 enum AlertCategory: String, Codable {
     case inventario
     case merma
-    case turnos
+    case cortes
     case pipas
 
     /// Fuel chip shown on the alert card, mirroring the original prototype's mapping.
@@ -125,7 +95,7 @@ enum AlertCategory: String, Codable {
         switch self {
         case .inventario, .merma: return .regular
         case .pipas: return .diesel
-        case .turnos: return .especial
+        case .cortes: return .superFuel
         }
     }
 }
@@ -171,30 +141,8 @@ struct Tank: Identifiable {
         Int((Double(current) / Double(capacity) * 100).rounded())
     }
 
-    var isLow: Bool { percentage <= 20 }
-}
-
-struct HoseReading: Identifiable {
-    let hoseId: String
-    let fuelType: FuelType
-    let initial: Int
-    let final: Int
-    let gallons: Int
-
-    var id: String { hoseId }
-}
-
-struct Shift: Identifiable {
-    let id: String
-    let number: Int
-    let employee: String
-    let status: ShiftStatus
-    let startTime: String
-    let endTime: String?
-    let readings: [HoseReading]
-    let gallonsSold: Int
-    let cashExpected: Int
-    let cashDeclared: Int
+    var level: TankLevel { TankLevel(percentage: percentage) }
+    var isLow: Bool { level == .critical }
 }
 
 struct AlertItem: Identifiable {
@@ -204,6 +152,7 @@ struct AlertItem: Identifiable {
     let title: String
     let description: String
     let timeAgo: String
+    var fuelType: FuelType? = nil
 }
 
 struct PumpFuelSale: Identifiable {
@@ -238,7 +187,7 @@ struct Franchise: Identifiable {
         case .gallons: return Double(dailyGallons)
         case .revenue: return Double(dailySales)
         case .merma: return merma
-        case .revPerGallon: return (Double(dailySales) / Double(dailyGallons) * 100).rounded() / 100
+        case .revPerGallon: return dailyGallons == 0 ? 0 : (Double(dailySales) / Double(dailyGallons) * 100).rounded() / 100
         }
     }
 }
@@ -269,11 +218,11 @@ struct InventoryReconciliation {
 struct HourlySales: Identifiable {
     let hour: String
     let regular: Int
-    let especial: Int
+    let superFuel: Int
     let diesel: Int
 
     var id: String { hour }
-    var total: Int { regular + especial + diesel }
+    var total: Int { regular + superFuel + diesel }
 }
 
 struct PaymentMethod: Identifiable {

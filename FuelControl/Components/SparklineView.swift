@@ -19,7 +19,7 @@ struct SparklineView: View {
         }
         .chartXAxis(.hidden)
         .chartYAxis(.hidden)
-        .chartYScale(domain: (data.min() ?? 0)...(data.max() ?? 1))
+        .chartYScale(domain: (data.min() ?? 0)...max((data.min() ?? 0) + 1, data.max() ?? 1))
         .frame(width: 60, height: 28)
     }
 }

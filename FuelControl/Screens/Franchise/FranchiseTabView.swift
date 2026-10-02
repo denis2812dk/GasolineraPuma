@@ -1,57 +1,43 @@
 import SwiftUI
 
 struct FranchiseTabView: View {
+    let general: GeneralViewModel
+    let sucursal: SucursalViewModel
+    var onLogout: (() -> Void)?
+    @Environment(\.scenePhase) private var scenePhase
+
     var body: some View {
         TabView {
             NavigationStack {
-                InicioView()
-                    .navigationTitle("Inicio")
+                InicioView(viewModel: InicioViewModel(general: general, sucursal: sucursal))
+                    .toolbar {
+                        if let onLogout {
+                            Button("Cerrar sesión", action: onLogout)
+                        }
+                    }
             }
             .tabItem { Label("Inicio", systemImage: "house.fill") }
-
             NavigationStack {
-                VentasView()
-                    .navigationTitle("Ventas")
+                VentasView(viewModel: VentasViewModel(general: general, sucursal: sucursal))
             }
             .tabItem { Label("Ventas", systemImage: "chart.bar.fill") }
-
             NavigationStack {
-                TanquesView()
-                    .navigationTitle("Tanques")
+                TanquesView(viewModel: TanquesViewModel(sucursal: sucursal))
             }
             .tabItem { Label("Tanques", systemImage: "drop.fill") }
-
-            FranchiseTurnosTab()
-                .tabItem { Label("Turnos", systemImage: "person.2.fill") }
-
             NavigationStack {
-                AlertasListView(alerts: MockData.franchiseAlerts)
-                    .navigationTitle("Alertas")
+                CortesView(viewModel: CortesViewModel(sucursal: sucursal))
+            }
+            .tabItem { Label("Cortes", systemImage: "doc.text.fill") }
+            NavigationStack {
+                AlertasListView(viewModel: AlertsViewModel(general: general, sucursal: sucursal))
             }
             .tabItem { Label("Alertas", systemImage: "bell.fill") }
         }
         .tint(Theme.primary)
-    }
-}
-
-/// Franchise "Turnos" tab wired with real navigation to the shift detail screen.
-/// Kept separate from `TurnosView` so the tab can own its own `NavigationStack` path.
-struct FranchiseTurnosTab: View {
-    @State private var path: [String] = []
-
-    var body: some View {
-        NavigationStack(path: $path) {
-            TurnosView(onShiftSelect: { id in path.append(id) })
-                .navigationTitle("Turnos")
-                .navigationDestination(for: String.self) { shiftId in
-                    if let shift = MockData.shifts.first(where: { $0.id == shiftId }) {
-                        ShiftDetailView(shift: shift)
-                    }
-                }
+        .onAppear { sucursal.ensureToday() }
+        .onChange(of: scenePhase) { _, phase in
+            if phase == .active { sucursal.ensureToday() }
         }
     }
-}
-
-#Preview {
-    FranchiseTabView()
 }

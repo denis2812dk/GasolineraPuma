@@ -1,18 +1,10 @@
 import SwiftUI
 
 struct FranquiciasView: View {
+    @State var viewModel: FranquiciasViewModel
     let onFranchiseSelect: (String) -> Void
 
     @State private var view = 0
-    @State private var search = ""
-    @State private var selectedPin: String?
-
-    private var filtered: [Franchise] {
-        guard !search.isEmpty else { return MockData.franchises }
-        return MockData.franchises.filter {
-            $0.name.localizedCaseInsensitiveContains(search) || $0.zone.localizedCaseInsensitiveContains(search)
-        }
-    }
 
     var body: some View {
         ScrollView {
@@ -41,14 +33,14 @@ struct FranquiciasView: View {
         VStack(alignment: .leading, spacing: 12) {
             HStack {
                 Image(systemName: "magnifyingglass").foregroundStyle(Theme.label2)
-                TextField("Buscar franquicia o zona...", text: $search)
+                TextField("Buscar franquicia o zona...", text: Binding(get: { viewModel.search }, set: { viewModel.search = $0 }))
             }
             .padding(14)
             .background(Color(hex: "787880").opacity(0.12))
             .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
 
             VStack(spacing: 0) {
-                ForEach(Array(filtered.enumerated()), id: \.element.id) { i, f in
+                ForEach(Array(viewModel.filtered.enumerated()), id: \.element.id) { i, f in
                     Button {
                         onFranchiseSelect(f.id)
                     } label: {
@@ -73,7 +65,7 @@ struct FranquiciasView: View {
                         .contentShape(Rectangle())
                     }
                     .buttonStyle(.plain)
-                    if i < filtered.count - 1 { Divider().padding(.leading, 16) }
+                    if i < viewModel.filtered.count - 1 { Divider().padding(.leading, 16) }
                 }
             }
             .iosCard()
@@ -88,8 +80,8 @@ struct FranquiciasView: View {
             ZStack(alignment: .bottomLeading) {
                 Color(hex: "D9E3F0")
                 mapRoads
-                ForEach(MockData.franchises) { f in
-                    if let pos = MockData.franchiseMapPositions[f.id] {
+                ForEach(viewModel.franchises) { f in
+                    if let pos = viewModel.mapPositions[f.id] {
                         mapPin(for: f, at: pos)
                     }
                 }
@@ -99,7 +91,7 @@ struct FranquiciasView: View {
             .clipShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
             .padding(.horizontal, 16)
 
-            if let pinFranchise = selectedPin.flatMap({ id in MockData.franchises.first { $0.id == id } }) {
+            if let pinFranchise = viewModel.selectedFranchise {
                 VStack(alignment: .leading, spacing: 12) {
                     HStack {
                         VStack(alignment: .leading, spacing: 2) {
@@ -112,7 +104,7 @@ struct FranquiciasView: View {
                     HStack(spacing: 24) {
                         statPair("Ventas hoy", Format.dollars(pinFranchise.dailySales))
                         statPair("Galones", Format.grouped(pinFranchise.dailyGallons))
-                        statPair("Merma", "\(pinFranchise.merma, specifier: "%.1f")%")
+                        statPair("Merma", pinFranchise.merma.formatted(.number.precision(.fractionLength(1))) + "%")
                     }
                     Button("Ver detalle →") {
                         onFranchiseSelect(pinFranchise.id)
@@ -141,7 +133,7 @@ struct FranquiciasView: View {
     }
 
     private func mapPin(for f: Franchise, at pos: MapPosition) -> some View {
-        let isSelected = selectedPin == f.id
+        let isSelected = viewModel.selectedPin == f.id
         return GeometryReader { geo in
             let scaleX = geo.size.width / 393
             let scaleY = geo.size.height / 250
@@ -156,7 +148,7 @@ struct FranquiciasView: View {
             }
             .position(x: pos.x * scaleX, y: pos.y * scaleY)
             .onTapGesture {
-                selectedPin = (selectedPin == f.id) ? nil : f.id
+                viewModel.selectedPin = (viewModel.selectedPin == f.id) ? nil : f.id
             }
         }
     }
@@ -191,9 +183,9 @@ struct FranquiciasView: View {
 
     private var legend: some View {
         HStack(spacing: 8) {
-            legendDot(color: Theme.ok, label: "Normal")
-            legendDot(color: Theme.accent, label: "Atención")
-            legendDot(color: Theme.danger, label: "Crítica")
+            legendDot(color: Theme.ok, label: "Óptimo")
+            legendDot(color: Theme.accent, label: "Medio")
+            legendDot(color: Theme.danger, label: "Crítico")
         }
         .padding(8)
     }
@@ -208,8 +200,4 @@ struct FranquiciasView: View {
         .background(.white.opacity(0.8))
         .clipShape(Capsule())
     }
-}
-
-#Preview {
-    FranquiciasView(onFranchiseSelect: { _ in })
 }

@@ -1,6 +1,7 @@
 import SwiftUI
 
 struct TanquesView: View {
+    @State var viewModel: TanquesViewModel
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 12) {
@@ -8,12 +9,14 @@ struct TanquesView: View {
                     .font(.system(size: 28, weight: .bold))
                     .padding(.bottom, 4)
 
-                ForEach(MockData.tanks) { tank in
+                ForEach(viewModel.tanks) { tank in
                     tankDetailCard(tank)
                 }
 
-                reconciliationCard
-                receptionsCard
+                Text("Crítico: hasta 20% · Medio: más de 20% hasta 50% · Óptimo: más de 50%")
+                    .font(.caption).foregroundStyle(.secondary)
+                if let rec = viewModel.inventoryRec { reconciliationCard(rec) }
+                if !viewModel.receptions.isEmpty { receptionsCard }
             }
             .padding(16)
             .padding(.bottom, 20)
@@ -26,11 +29,9 @@ struct TanquesView: View {
             HStack {
                 HStack(spacing: 8) {
                     FuelChip(type: tank.fuelType)
-                    if tank.isLow {
-                        Text("⚠ NIVEL BAJO")
-                            .font(.system(size: 11, weight: .bold))
-                            .foregroundStyle(Theme.accent)
-                    }
+                    Text(tank.level.rawValue)
+                        .font(.system(size: 11, weight: .bold))
+                        .foregroundStyle(tank.level.color)
                 }
                 Spacer()
                 Text("Última lectura: \(tank.lastReading)")
@@ -44,7 +45,7 @@ struct TanquesView: View {
                 VStack(alignment: .leading, spacing: 4) {
                     Text("\(tank.percentage)%")
                         .font(.system(size: 36, weight: .bold))
-                        .foregroundStyle(tank.isLow ? Theme.accent : .primary)
+                        .foregroundStyle(tank.level.color)
                     Text("\(Format.grouped(tank.current)) / \(Format.grouped(tank.capacity)) gal")
                         .font(.system(size: 13))
                         .foregroundStyle(Theme.label2)
@@ -62,7 +63,7 @@ struct TanquesView: View {
                             Text("Autonomía estimada").font(.system(size: 10)).foregroundStyle(Theme.label2)
                             Text("\(tank.autonomyDays, specifier: "%.1f") días")
                                 .font(.system(size: 14, weight: .bold))
-                                .foregroundStyle(tank.isLow ? Theme.accent : Theme.ok)
+                                .foregroundStyle(tank.level.color)
                         }
                         .gridCellColumns(2)
                     }
@@ -75,7 +76,7 @@ struct TanquesView: View {
         .iosCard()
         .overlay(
             RoundedRectangle(cornerRadius: Theme.cardCornerRadius, style: .continuous)
-                .stroke(tank.isLow ? Theme.accent : .clear, lineWidth: 2)
+                .stroke(tank.level.color, lineWidth: 2)
         )
     }
 
@@ -86,8 +87,7 @@ struct TanquesView: View {
         var id: String { label }
     }
 
-    private var reconciliationCard: some View {
-        let rec = MockData.inventoryRec
+    private func reconciliationCard(_ rec: InventoryReconciliation) -> some View {
         let rows: [ReconciliationRow] = [
             ReconciliationRow(label: "Inventario inicial", value: rec.initial, isBold: false),
             ReconciliationRow(label: "+ Recepciones", value: rec.receptions, isBold: false),
@@ -143,7 +143,7 @@ struct TanquesView: View {
             Text("Recepciones de pipa").font(.system(size: 15, weight: .semibold))
 
             VStack(spacing: 0) {
-                ForEach(MockData.receptions) { rec in
+                ForEach(viewModel.receptions) { rec in
                     VStack(alignment: .leading, spacing: 4) {
                         HStack {
                             HStack(spacing: 8) {
@@ -181,8 +181,4 @@ struct TanquesView: View {
         .padding(16)
         .iosCard()
     }
-}
-
-#Preview {
-    TanquesView()
 }

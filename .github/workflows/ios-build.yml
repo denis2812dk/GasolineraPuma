@@ -6,8 +6,28 @@ on:
   workflow_dispatch:
 
 jobs:
+  logic-tests:
+    name: swift test (business logic: cortes, bombas, validaciones)
+    runs-on: macos-15
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: swift test
+        run: |
+          set -o pipefail
+          swift test 2>&1 | tee swift-test.log
+
+      - name: Surface failures as annotations
+        if: failure()
+        run: |
+          grep -E 'error:|XCTAssert.*failed' swift-test.log | while IFS= read -r line; do
+            escaped=$(echo "$line" | sed 's/%/%25/g; s/\r/%0D/g; s/\n/%0A/g')
+            echo "::error::${escaped}"
+          done
+
   build:
-    name: Build FuelControl (Debug, iOS Simulator SDK)
+    name: xcodebuild (Debug, iOS Simulator SDK)
     runs-on: macos-15
 
     steps:
@@ -18,6 +38,8 @@ jobs:
         run: xcodebuild -version
 
       - name: Build
+        id: build
+        continue-on-error: true
         run: |
           set -o pipefail
           xcodebuild \
@@ -26,4 +48,22 @@ jobs:
             -destination 'generic/platform=iOS Simulator' \
             -configuration Debug \
             CODE_SIGNING_ALLOWED=NO \
-            clean build
+            clean build 2>&1 | tee xcodebuild.log
+
+      - name: Surface compiler errors as annotations
+        if: steps.build.outcome == 'failure'
+        run: |
+          grep -E ': error:' xcodebuild.log | while IFS= read -r line; do
+            escaped=$(echo "$line" | sed 's/%/%25/g; s/\r/%0D/g; s/\n/%0A/g')
+            echo "::error::${escaped}"
+          done
+          echo "---- full xcodebuild tail (also in the uploaded artifact) ----"
+          tail -n 200 xcodebuild.log
+          exit 1
+
+      - name: Upload full build log
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: xcodebuild-log
+          path: xcodebuild.log

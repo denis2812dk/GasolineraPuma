@@ -21,9 +21,9 @@
 		8FD5018979ADB56B711D0817 /* LoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB5135BD7DE248D39E73A610 /* LoginView.swift */; };
 		864A6F441FE19A473EE3EE4B /* FranchiseTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CFFC59FEC8F896B06BDF099D /* FranchiseTabView.swift */; };
 		9A911ED1463D24E8BACC77EF /* InicioView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 110792B8A49A3D75A93C2B0A /* InicioView.swift */; };
-		C10C505F6BA579824272ECAA /* ShiftDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0357479B3167CF621D2F731F /* ShiftDetailView.swift */; };
+		C10C505F6BA579824272ECAA /* CorteDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0357479B3167CF621D2F731F /* CorteDetailView.swift */; };
 		809C3D78FF65B7CB28CC6AA6 /* TanquesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F370B49FBA3D8FCFB31471D0 /* TanquesView.swift */; };
-		DAE3E29138B510EC115B8E7F /* TurnosView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5250FE3749FA5FE26AA12411 /* TurnosView.swift */; };
+		DAE3E29138B510EC115B8E7F /* CortesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5250FE3749FA5FE26AA12411 /* CortesView.swift */; };
 		AEDE679E4988A7C7D97C1882 /* VentasView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F2BC08A8D773D7BDB18A5357 /* VentasView.swift */; };
 		A07EC37E407D0D5AA02CA6A9 /* CompararView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F531B8FA96F5AE22C6E9114 /* CompararView.swift */; };
 		C20427E1C25524B8FEAC4685 /* FranchiseDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01D0A301ADA7E16269F83184 /* FranchiseDetailView.swift */; };
@@ -37,6 +37,12 @@
 		E51D2492A2DC71754F8AAFB5 /* ViewModifiers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4FC34AF670663989034F29CC /* ViewModifiers.swift */; };
 		E104C4B49F81895DDAE483B8 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 183993B4DD0FD61D3DF9CAC6 /* Assets.xcassets */; };
 		5FF1CE97DAA6BCBAB7849DAD /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 520FE02A5077110B9D75991C /* Preview Assets.xcassets */; };
+		FC1000000000000000000001 /* CorteModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC0000000000000000000001 /* CorteModels.swift */; };
+		FC1000000000000000000002 /* SessionViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC0000000000000000000002 /* SessionViewModel.swift */; };
+		FC1000000000000000000003 /* GeneralViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC0000000000000000000003 /* GeneralViewModel.swift */; };
+		FC1000000000000000000004 /* SucursalViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC0000000000000000000004 /* SucursalViewModel.swift */; };
+		FC1000000000000000000005 /* ScreenViewModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC0000000000000000000005 /* ScreenViewModels.swift */; };
+		FC1000000000000000000006 /* AdministracionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC0000000000000000000006 /* AdministracionView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -54,9 +60,9 @@
 		AB5135BD7DE248D39E73A610 /* LoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "LoginView.swift"; sourceTree = "<group>"; };
 		CFFC59FEC8F896B06BDF099D /* FranchiseTabView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "FranchiseTabView.swift"; sourceTree = "<group>"; };
 		110792B8A49A3D75A93C2B0A /* InicioView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "InicioView.swift"; sourceTree = "<group>"; };
-		0357479B3167CF621D2F731F /* ShiftDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ShiftDetailView.swift"; sourceTree = "<group>"; };
+		0357479B3167CF621D2F731F /* CorteDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CorteDetailView.swift"; sourceTree = "<group>"; };
 		F370B49FBA3D8FCFB31471D0 /* TanquesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TanquesView.swift"; sourceTree = "<group>"; };
-		5250FE3749FA5FE26AA12411 /* TurnosView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TurnosView.swift"; sourceTree = "<group>"; };
+		5250FE3749FA5FE26AA12411 /* CortesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CortesView.swift"; sourceTree = "<group>"; };
 		F2BC08A8D773D7BDB18A5357 /* VentasView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "VentasView.swift"; sourceTree = "<group>"; };
 		6F531B8FA96F5AE22C6E9114 /* CompararView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CompararView.swift"; sourceTree = "<group>"; };
 		01D0A301ADA7E16269F83184 /* FranchiseDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "FranchiseDetailView.swift"; sourceTree = "<group>"; };
@@ -72,6 +78,12 @@
 		520FE02A5077110B9D75991C /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		8B84FECFE8B88E8B8A01542B /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "Info.plist"; sourceTree = "<group>"; };
 		85967920CB86EAF8BBF78ACD /* FuelControl.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = FuelControl.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		FC0000000000000000000001 /* CorteModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Models/CorteModels.swift"; sourceTree = "<group>"; };
+		FC0000000000000000000002 /* SessionViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ViewModels/SessionViewModel.swift"; sourceTree = "<group>"; };
+		FC0000000000000000000003 /* GeneralViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ViewModels/GeneralViewModel.swift"; sourceTree = "<group>"; };
+		FC0000000000000000000004 /* SucursalViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ViewModels/SucursalViewModel.swift"; sourceTree = "<group>"; };
+		FC0000000000000000000005 /* ScreenViewModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ViewModels/ScreenViewModels.swift"; sourceTree = "<group>"; };
+		FC0000000000000000000006 /* AdministracionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Screens/General/AdministracionView.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -88,6 +100,12 @@
 		5404FDC2DFCF40C9A25488D1 /* FuelControl */ = {
 			isa = PBXGroup;
 			children = (
+				FC0000000000000000000001 /* CorteModels.swift */,
+				FC0000000000000000000002 /* SessionViewModel.swift */,
+				FC0000000000000000000003 /* GeneralViewModel.swift */,
+				FC0000000000000000000004 /* SucursalViewModel.swift */,
+				FC0000000000000000000005 /* ScreenViewModels.swift */,
+				FC0000000000000000000006 /* AdministracionView.swift */,
 				66CD3C4ED5D17BB87706D9D9,
 				DE9C1021B106EC3705E94970,
 				06B7A2A557C60F31C1965CB6,
@@ -289,6 +307,12 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				FC1000000000000000000001 /* CorteModels.swift in Sources */,
+				FC1000000000000000000002 /* SessionViewModel.swift in Sources */,
+				FC1000000000000000000003 /* GeneralViewModel.swift in Sources */,
+				FC1000000000000000000004 /* SucursalViewModel.swift in Sources */,
+				FC1000000000000000000005 /* ScreenViewModels.swift in Sources */,
+				FC1000000000000000000006 /* AdministracionView.swift in Sources */,
 				4C7C743FC23170638F79B411 /* RootView.swift in Sources */,
 				BC16FB85EB82291620FD1AF3 /* AlertCardView.swift in Sources */,
 				98247A172E902A1770D633B9 /* ChartCardView.swift in Sources */,
@@ -303,9 +327,9 @@
 				8FD5018979ADB56B711D0817 /* LoginView.swift in Sources */,
 				864A6F441FE19A473EE3EE4B /* FranchiseTabView.swift in Sources */,
 				9A911ED1463D24E8BACC77EF /* InicioView.swift in Sources */,
-				C10C505F6BA579824272ECAA /* ShiftDetailView.swift in Sources */,
+				C10C505F6BA579824272ECAA /* CorteDetailView.swift in Sources */,
 				809C3D78FF65B7CB28CC6AA6 /* TanquesView.swift in Sources */,
-				DAE3E29138B510EC115B8E7F /* TurnosView.swift in Sources */,
+				DAE3E29138B510EC115B8E7F /* CortesView.swift in Sources */,
 				AEDE679E4988A7C7D97C1882 /* VentasView.swift in Sources */,
 				A07EC37E407D0D5AA02CA6A9 /* CompararView.swift in Sources */,
 				C20427E1C25524B8FEAC4685 /* FranchiseDetailView.swift in Sources */,
