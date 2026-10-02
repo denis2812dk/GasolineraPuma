@@ -98,6 +98,37 @@ jobs:
           path: screenshots/
           if-no-files-found: ignore
 
+      - name: Upload to Appetize.io for interactive testing
+        if: steps.build.outcome == 'success' && env.APPETIZE_API_TOKEN != ''
+        env:
+          APPETIZE_API_TOKEN: ${{ secrets.APPETIZE_API_TOKEN }}
+        run: |
+          set -o pipefail
+          cd build/Build/Products/Debug-iphonesimulator
+          zip -r -X -q FuelControl.zip FuelControl.app
+          cd -
+          RESPONSE=$(curl -sS -X POST https://api.appetize.io/v1/apps \
+            -H "X-API-KEY: $APPETIZE_API_TOKEN" \
+            -F "file=@build/Build/Products/Debug-iphonesimulator/FuelControl.zip" \
+            -F "platform=ios" \
+            -F "note=CI run ${{ github.run_number }} - ${{ github.sha }}" \
+            -F "appPermissions.run=public")
+          echo "$RESPONSE"
+          PUBLIC_KEY=$(echo "$RESPONSE" | jq -r '.publicKey // empty')
+          if [ -z "$PUBLIC_KEY" ]; then
+            echo "::warning::Appetize upload did not return a publicKey. Check the response above."
+          else
+            URL="https://appetize.io/app/$PUBLIC_KEY"
+            echo "Appetize session: $URL"
+            {
+              echo "## Probar interactivamente"
+              echo
+              echo "Corre la app de verdad, con toques, en el navegador:"
+              echo
+              echo "[$URL]($URL)"
+            } >> "$GITHUB_STEP_SUMMARY"
+          fi
+
       - name: Upload full build log
         if: always()
         uses: actions/upload-artifact@v4
