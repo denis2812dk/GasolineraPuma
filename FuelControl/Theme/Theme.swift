@@ -15,11 +15,6 @@ extension Color {
     }
 }
 
-/// Design tokens shared by the app and the macOS-only logic test target
-/// (`Package.swift`). Anything that needs a UIKit-only adaptive color is
-/// guarded behind `canImport(UIKit)` so `swift test` keeps compiling.
-/// Puma Energy brand palette: deep green primary, red accent for alerts,
-/// white surfaces throughout (the app simulates the Puma El Salvador brand).
 enum Theme {
     static let primary = Color(hex: "007142")
     static let primaryLight = Color(hex: "00A862")
@@ -27,7 +22,6 @@ enum Theme {
     static let danger = Color(hex: "ED1C24")
     static let ok = Color(hex: "1E8E3E")
 
-    /// Screen background. Plain white in light mode, true black in dark mode.
     static let background: Color = {
         #if canImport(UIKit)
         Color(uiColor: .systemBackground)
@@ -36,8 +30,6 @@ enum Theme {
         #endif
     }()
 
-    /// Card/surface background. Also white - cards are separated from the
-    /// background with a hairline border and shadow instead of a fill tint.
     static let card: Color = {
         #if canImport(UIKit)
         Color(uiColor: .systemBackground)
@@ -46,7 +38,6 @@ enum Theme {
         #endif
     }()
 
-    /// A subtle adaptive fill for search bars, unselected chips, etc.
     static let subtleFill: Color = {
         #if canImport(UIKit)
         Color(uiColor: .tertiarySystemFill)

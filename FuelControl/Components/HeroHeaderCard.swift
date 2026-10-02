@@ -1,7 +1,5 @@
 import SwiftUI
 
-/// A bold gradient header used at the top of dashboard-style screens,
-/// e.g. the station name on Inicio or the network title on Resumen.
 struct HeroHeaderCard: View {
     let eyebrow: String
     let title: String

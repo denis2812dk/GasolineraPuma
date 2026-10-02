@@ -23,8 +23,6 @@ struct Manager: Identifiable {
     let id: UUID
     let name: String
     let email: String
-    /// Plaintext on purpose: local-only demo data for a university prototype,
-    /// never sent over a network.
     let password: String
     let role: String
 }
@@ -50,7 +48,6 @@ enum LossReason: String, CaseIterable, Identifiable {
 struct PumpEntry: Identifiable {
     let id: Int
     var fuel: FuelType = .regular
-    // Empty is distinct from explicitly registering zero gallons.
     var sales = ""
     var purchases = ""
     var losses = ""

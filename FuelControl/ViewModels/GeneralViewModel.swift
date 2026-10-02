@@ -1,9 +1,6 @@
 import SwiftUI
 import Observation
 
-/// A single login account for the Gerente General role. There is exactly one
-/// in this local prototype; stored here instead of as a `Manager` because the
-/// general manager isn't linked to any one station.
 struct GeneralAccount {
     let name = "Alejandro Rivas"
     let email = "alejandro@fuelcontrol.com"
@@ -17,6 +14,7 @@ struct GeneralAccount {
     private(set) var assignments: [String: UUID] = [:]
     private(set) var sucursales: [String: SucursalViewModel] = [:]
     private(set) var mapPositions: [String: MapPosition]
+    private(set) var prices: [FuelType: Double] = [.regular: 3.75, .superFuel: 4.25, .diesel: 3.50]
     let generalAccount = GeneralAccount()
 
     init() {
@@ -24,7 +22,6 @@ struct GeneralAccount {
         mapPositions = MockData.franchiseMapPositions
         seedDemoManagers()
         for franchise in seeds {
-            // Local sample breakdown. Integer remainders preserve the source totals exactly.
             let regular = franchise.dailyGallons * 60 / 100
             let superGallons = franchise.dailyGallons * 25 / 100
             let regularRevenue = franchise.dailySales * 60 / 100
@@ -47,8 +44,6 @@ struct GeneralAccount {
                  temperature: 84, waterLevel: 0, lastReading: "Inicial", autonomyDays: 3)
         }
     }
-    /// A couple of ready-to-use franchise manager logins so the app is
-    /// demoable immediately, without first visiting Administración.
     private func seedDemoManagers() {
         let maria = Manager(id: UUID(), name: "María López", email: "maria@fuelcontrol.com",
                              password: "turno123", role: "Gerente de sucursal")
@@ -71,12 +66,12 @@ struct GeneralAccount {
             return result
         }
     }
-    func price(_ fuel: FuelType) -> Double {
-        switch fuel {
-        case .regular: return 3.75
-        case .superFuel: return 4.25
-        case .diesel: return 3.50
-        }
+    func price(_ fuel: FuelType) -> Double { prices[fuel] ?? 0 }
+
+    @discardableResult func setPrice(_ value: Double, for fuel: FuelType) -> Bool {
+        guard value > 0, value <= 100 else { return false }
+        prices[fuel] = (value * 100).rounded() / 100
+        return true
     }
     var franchises: [Franchise] {
         seeds.map { seed in
@@ -120,15 +115,11 @@ struct GeneralAccount {
         return true
     }
 
-    /// Returns `true` if the credentials match the single Gerente General account.
     func authenticateGeneral(email: String, password: String) -> Bool {
         let clean = email.trimmingCharacters(in: .whitespacesAndNewlines).lowercased()
         return clean == generalAccount.email.lowercased() && password == generalAccount.password
     }
 
-    /// Returns the matching manager's station + display name, if the
-    /// credentials match a registered Gerente de Sucursal that is linked to
-    /// a station. A manager created but not yet linked cannot log in yet.
     func authenticateFranchise(email: String, password: String) -> (stationId: String, name: String)? {
         let clean = email.trimmingCharacters(in: .whitespacesAndNewlines).lowercased()
         guard let manager = managers.first(where: { $0.email == clean && $0.password == password }) else { return nil }
@@ -146,6 +137,9 @@ struct GeneralAccount {
     var password = ""
     var selectedManager: UUID?
     var selectedStation = ""
+    var regularPriceText = ""
+    var superPriceText = ""
+    var dieselPriceText = ""
     var message: String?
     init(general: GeneralViewModel) { self.general = general }
     func addStation() {
@@ -170,6 +164,23 @@ struct GeneralAccount {
             message = "Selecciona un gerente y una sucursal."; return
         }
         message = "Vínculo guardado."
+    }
+    func updatePrices() {
+        var updated: [String] = []
+        if let value = Self.parsePrice(regularPriceText), general.setPrice(value, for: .regular) { updated.append(FuelType.regular.label) }
+        if let value = Self.parsePrice(superPriceText), general.setPrice(value, for: .superFuel) { updated.append(FuelType.superFuel.label) }
+        if let value = Self.parsePrice(dieselPriceText), general.setPrice(value, for: .diesel) { updated.append(FuelType.diesel.label) }
+        guard !updated.isEmpty else {
+            message = "Escribe al menos un precio mayor a 0 y hasta 100."
+            return
+        }
+        regularPriceText = ""; superPriceText = ""; dieselPriceText = ""
+        message = "Precio actualizado: \(updated.joined(separator: ", "))."
+    }
+    private static func parsePrice(_ text: String) -> Double? {
+        let clean = text.trimmingCharacters(in: .whitespacesAndNewlines).replacingOccurrences(of: ",", with: ".")
+        guard !clean.isEmpty, let value = Double(clean) else { return nil }
+        return value
     }
 }
 

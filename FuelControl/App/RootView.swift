@@ -31,7 +31,6 @@ struct RootView: View {
         }
     }
 
-    /// Returns an error message to show inline, or `nil` on success.
     private func attemptLogin(email: String, password: String) -> String? {
         if general.authenticateGeneral(email: email, password: password) {
             session.login(role: .general, name: general.generalAccount.name, email: general.generalAccount.email)

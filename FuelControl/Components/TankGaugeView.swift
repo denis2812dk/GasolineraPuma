@@ -1,7 +1,5 @@
 import SwiftUI
 
-/// A circular radial gauge (like a dashboard dial) showing the tank's fill
-/// percentage, with the number in the center.
 struct TankGaugeView: View {
     let percentage: Int
     let fuelType: FuelType

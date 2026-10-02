@@ -86,13 +86,11 @@ final class FuelControlLogicTests: XCTestCase {
         XCTAssertTrue(general.authenticateGeneral(email: " Alejandro@FuelControl.com ", password: "puma2026"))
         XCTAssertFalse(general.authenticateGeneral(email: "alejandro@fuelcontrol.com", password: "wrong"))
 
-        // Seeded demo manager, already linked to f1.
         let loggedIn = try XCTUnwrap(general.authenticateFranchise(email: "maria@fuelcontrol.com", password: "turno123"))
         XCTAssertEqual(loggedIn.stationId, "f1")
         XCTAssertEqual(loggedIn.name, "María López")
         XCTAssertNil(general.authenticateFranchise(email: "maria@fuelcontrol.com", password: "wrong"))
 
-        // A manager created but not yet linked to a station cannot log in.
         let unlinked = try XCTUnwrap(general.addManager(name: "Nuevo Gerente", email: "nuevo@fuelcontrol.com", password: "clave123"))
         XCTAssertNil(general.authenticateFranchise(email: "nuevo@fuelcontrol.com", password: "clave123"))
         let stationId = try XCTUnwrap(general.addStation(name: "Otra", zone: "Centro"))
@@ -100,8 +98,24 @@ final class FuelControlLogicTests: XCTestCase {
         let afterLink = try XCTUnwrap(general.authenticateFranchise(email: "nuevo@fuelcontrol.com", password: "clave123"))
         XCTAssertEqual(afterLink.stationId, stationId)
 
-        // The general account's email can't be reused for a manager login.
         XCTAssertNil(general.addManager(name: "Impostor", email: "alejandro@fuelcontrol.com", password: "clave123"))
+    }
+
+    func testFuelPriceConfiguration() throws {
+        let general = GeneralViewModel()
+        XCTAssertEqual(general.price(.regular), 3.75)
+        XCTAssertFalse(general.setPrice(0, for: .regular))
+        XCTAssertFalse(general.setPrice(-1, for: .regular))
+        XCTAssertFalse(general.setPrice(101, for: .regular))
+        XCTAssertEqual(general.price(.regular), 3.75)
+        XCTAssertTrue(general.setPrice(4.19, for: .regular))
+        XCTAssertEqual(general.price(.regular), 4.19)
+
+        let admin = AdministracionViewModel(general: general)
+        admin.regularPriceText = "5,00"
+        admin.updatePrices()
+        XCTAssertEqual(general.price(.regular), 5.00)
+        XCTAssertEqual(admin.regularPriceText, "")
     }
 
     func testConsolidatedDashboardIncludesOnlyClosedSalesOnce() throws {

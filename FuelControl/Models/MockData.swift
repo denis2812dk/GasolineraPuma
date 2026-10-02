@@ -1,7 +1,5 @@
 import SwiftUI
 
-/// Static sample data mirroring the original Figma prototype's `data.ts`.
-/// Used only to seed local, in-memory ViewModels.
 enum MockData {
 
     // MARK: - Franchise "Santa Ana Centro" (f1)
@@ -143,7 +141,6 @@ enum MockData {
         AlertItem(id: "ga6", severity: .info, category: .merma, title: "Colonia Escalón: Merma en límite", description: "La merma acumulada del mes alcanzó 0.6%, acercándose al umbral de alerta (0.8%).", timeAgo: "hace 5h"),
     ]
 
-    /// Map positions for franchise pins, on a 393x250 canvas (matches the SwiftUI map canvas size).
     static let franchiseMapPositions: [String: MapPosition] = [
         "f1": MapPosition(x: 68, y: 148), "f2": MapPosition(x: 55, y: 100),
         "f3": MapPosition(x: 178, y: 110), "f4": MapPosition(x: 168, y: 148),

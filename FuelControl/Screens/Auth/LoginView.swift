@@ -1,7 +1,6 @@
 import SwiftUI
 
 struct LoginView: View {
-    /// Returns an error message to display, or `nil` on successful login.
     let onLogin: (_ email: String, _ password: String) -> String?
 
     @State private var role: UserRole = .franchise

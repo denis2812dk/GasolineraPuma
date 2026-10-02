@@ -11,6 +11,12 @@ struct AdministracionView: View {
                 Text("Las cuentas de Gerente de Sucursal creadas aquí inician sesión con su propio correo y contraseña, una vez vinculadas a una estación.")
                     .font(.caption).foregroundStyle(.secondary)
             }
+            Section("Precios de combustible (USD/galón)") {
+                priceRow(.regular, text: $model.regularPriceText)
+                priceRow(.superFuel, text: $model.superPriceText)
+                priceRow(.diesel, text: $model.dieselPriceText)
+                Button("Actualizar precios") { viewModel.updatePrices() }
+            }
             Section("Registrar nueva estación de servicio") {
                 TextField("Nombre de estación", text: $model.stationName)
                 TextField("Zona", text: $model.zone)
@@ -59,5 +65,18 @@ struct AdministracionView: View {
                 }
             }
         }.navigationTitle("Administración")
+    }
+
+    private func priceRow(_ fuel: FuelType, text: Binding<String>) -> some View {
+        HStack {
+            FuelChip(type: fuel)
+            Spacer()
+            Text(viewModel.general.price(fuel).formatted(.currency(code: "USD")))
+                .foregroundStyle(.secondary)
+            TextField("Nuevo", text: text)
+                .keyboardType(.decimalPad)
+                .multilineTextAlignment(.trailing)
+                .frame(width: 90)
+        }
     }
 }

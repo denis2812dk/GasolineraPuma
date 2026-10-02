@@ -90,7 +90,6 @@ enum AlertCategory: String, Codable {
     case cortes
     case pipas
 
-    /// Fuel chip shown on the alert card, mirroring the original prototype's mapping.
     var relatedFuelType: FuelType {
         switch self {
         case .inventario, .merma: return .regular

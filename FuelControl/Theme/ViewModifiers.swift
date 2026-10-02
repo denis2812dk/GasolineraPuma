@@ -17,7 +17,6 @@ struct IOSCardModifier: ViewModifier {
 }
 
 extension View {
-    /// Mirrors the `.ios-card` utility class from the original design.
     func iosCard(padding: CGFloat = 0) -> some View {
         modifier(IOSCardModifier(padding: padding))
     }
