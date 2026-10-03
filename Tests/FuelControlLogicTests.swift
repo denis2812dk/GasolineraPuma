@@ -135,6 +135,31 @@ final class FuelControlLogicTests: XCTestCase {
         XCTAssertEqual(general.fuelTotals(for: id).reduce(0) { $0 + $1.revenue }, 225)
     }
 
+    func testPersistenceSurvivesReload() throws {
+        PersistenceStore.clear()
+        let general = GeneralViewModel()
+        XCTAssertTrue(general.setPrice(5.25, for: .regular))
+        let stationId = try XCTUnwrap(general.addStation(name: "Persistida", zone: "Centro"))
+        let manager = try XCTUnwrap(general.addManager(name: "Temporal", email: "temporal@example.com", password: "abcd"))
+        XCTAssertTrue(general.link(manager: manager, station: stationId))
+        let vm = try XCTUnwrap(general.sucursales[stationId])
+        let corte = try XCTUnwrap(vm.todayCortes.first?.id)
+        vm.update(corte, pump: 1) { $0.sales = "12"; $0.purchases = "0"; $0.losses = "0" }
+        vm.register(corte, pump: 1)
+
+        let reloaded = GeneralViewModel()
+        XCTAssertEqual(reloaded.price(.regular), 5.25)
+        XCTAssertNotNil(reloaded.sucursales[stationId])
+        XCTAssertEqual(reloaded.manager(for: stationId)?.name, "Temporal")
+        XCTAssertTrue(try XCTUnwrap(reloaded.sucursales[stationId]?.corte(corte)?.entries.first?.registered))
+
+        reloaded.resetToDemoData()
+        let afterReset = GeneralViewModel()
+        XCTAssertEqual(afterReset.price(.regular), 3.75)
+        XCTAssertNil(afterReset.sucursales[stationId])
+        PersistenceStore.clear()
+    }
+
     func testTankLevelBoundariesAndSession() {
         XCTAssertEqual(TankLevel(percentage: 20), .critical)
         XCTAssertEqual(TankLevel(percentage: 21), .medium)

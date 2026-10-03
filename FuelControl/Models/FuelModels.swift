@@ -126,7 +126,7 @@ enum CompareMetric: String, CaseIterable, Identifiable {
     }
 }
 
-struct Tank: Identifiable {
+struct Tank: Identifiable, Codable {
     let id: String
     let fuelType: FuelType
     let capacity: Int
@@ -169,7 +169,7 @@ struct Pump: Identifiable {
     let flagged: String?
 }
 
-struct Franchise: Identifiable {
+struct Franchise: Identifiable, Codable {
     let id: String
     let name: String
     let zone: String
@@ -191,7 +191,7 @@ struct Franchise: Identifiable {
     }
 }
 
-struct Reception: Identifiable {
+struct Reception: Identifiable, Codable {
     let id: String
     let date: String
     let fuelType: FuelType
@@ -203,7 +203,7 @@ struct Reception: Identifiable {
     var isWithinTolerance: Bool { abs(differencePercent) < 1 }
 }
 
-struct InventoryReconciliation {
+struct InventoryReconciliation: Codable {
     let fuelType: FuelType
     let initial: Int
     let receptions: Int
@@ -254,7 +254,7 @@ struct HeatmapData {
     let values: [[Int]]
 }
 
-struct MapPosition {
+struct MapPosition: Codable {
     let x: CGFloat
     let y: CGFloat
 }

@@ -9,13 +9,15 @@ import Observation
     private(set) var cortes: [Corte] = []
     private(set) var error: String?
     private let now: () -> Date
+    var onChange: (() -> Void)?
 
     init(id: String, tanks: [Tank], inventoryRec: InventoryReconciliation? = nil,
-         receptions: [Reception] = [], now: @escaping () -> Date = Date.init) {
+         receptions: [Reception] = [], cortes: [Corte] = [], now: @escaping () -> Date = Date.init) {
         self.id = id
         self.tanks = tanks
         self.inventoryRec = inventoryRec
         self.receptions = receptions
+        self.cortes = cortes
         self.now = now
         ensureToday()
     }
@@ -53,6 +55,7 @@ import Observation
         }
         cortes[c].entries[p].registered = true
         error = nil
+        onChange?()
     }
     func canClose(_ id: UUID) -> Bool {
         guard let corte = corte(id), corte.closedAt == nil else { return false }
@@ -66,6 +69,7 @@ import Observation
         }
         cortes[index].closedAt = now()
         error = nil
+        onChange?()
     }
     func total(_ id: UUID, category: MovementCategory, fuel: FuelType? = nil) -> Double {
         guard let corte = corte(id) else { return 0 }

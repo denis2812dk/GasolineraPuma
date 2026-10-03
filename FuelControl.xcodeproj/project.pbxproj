@@ -44,6 +44,7 @@
 		FC1000000000000000000005 /* ScreenViewModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC0000000000000000000005 /* ScreenViewModels.swift */; };
 		FC1000000000000000000006 /* AdministracionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC0000000000000000000006 /* AdministracionView.swift */; };
 		2A58A2489FB8C9A64B8D9462 /* HeroHeaderCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3189708076B9AD538C2EED3B /* HeroHeaderCard.swift */; };
+		011D58D45C879FC3AD0253ED /* PersistenceStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89F32CB30EFBE41E003AEEB0 /* PersistenceStore.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -86,6 +87,7 @@
 		FC0000000000000000000005 /* ScreenViewModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ViewModels/ScreenViewModels.swift"; sourceTree = "<group>"; };
 		FC0000000000000000000006 /* AdministracionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Screens/General/AdministracionView.swift"; sourceTree = "<group>"; };
 		3189708076B9AD538C2EED3B /* HeroHeaderCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "HeroHeaderCard.swift"; sourceTree = "<group>"; };
+		89F32CB30EFBE41E003AEEB0 /* PersistenceStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PersistenceStore.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -147,6 +149,7 @@
 		2BCE5CADBD653B2868B791CF /* Models */ = {
 			isa = PBXGroup;
 			children = (
+				89F32CB30EFBE41E003AEEB0,
 				A43515BADA0E6F7FC0DA95DD,
 				FFE2A5CBD043BDEDFC26CFF1,
 			);
@@ -310,6 +313,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				011D58D45C879FC3AD0253ED /* PersistenceStore.swift in Sources */,
 				2A58A2489FB8C9A64B8D9462 /* HeroHeaderCard.swift in Sources */,
 				FC1000000000000000000001 /* CorteModels.swift in Sources */,
 				FC1000000000000000000002 /* SessionViewModel.swift in Sources */,

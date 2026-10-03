@@ -64,6 +64,13 @@ struct AdministracionView: View {
                     LabeledContent(station.name, value: viewModel.general.manager(for: station.id)?.name ?? "Sin gerente")
                 }
             }
+            Section("Datos") {
+                Text("Los cambios se guardan automáticamente en el dispositivo y persisten al cerrar la app.")
+                    .font(.caption).foregroundStyle(.secondary)
+                Button("Restablecer datos de demostración", role: .destructive) {
+                    viewModel.general.resetToDemoData()
+                }
+            }
         }.navigationTitle("Administración")
     }
 

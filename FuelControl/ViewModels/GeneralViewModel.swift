@@ -18,9 +18,19 @@ struct GeneralAccount {
     let generalAccount = GeneralAccount()
 
     init() {
+        if let saved = PersistenceStore.load() {
+            restore(from: saved)
+        } else {
+            seedMockData()
+        }
+    }
+
+    private func seedMockData() {
         seeds = MockData.franchises
         mapPositions = MockData.franchiseMapPositions
         seedDemoManagers()
+        fuelSeeds = [:]
+        sucursales = [:]
         for franchise in seeds {
             let regular = franchise.dailyGallons * 60 / 100
             let superGallons = franchise.dailyGallons * 25 / 100
@@ -33,10 +43,51 @@ struct GeneralAccount {
                           revenue: Double(franchise.dailySales - regularRevenue - superRevenue))
             ]
             let tanks = franchise.id == "f1" ? MockData.tanks : Self.defaultTanks(id: franchise.id)
-            sucursales[franchise.id] = SucursalViewModel(id: franchise.id, tanks: tanks,
+            let vm = SucursalViewModel(id: franchise.id, tanks: tanks,
                 inventoryRec: franchise.id == "f1" ? MockData.inventoryRec : nil,
                 receptions: franchise.id == "f1" ? MockData.receptions : [])
+            vm.onChange = { [weak self] in self?.persist() }
+            sucursales[franchise.id] = vm
         }
+    }
+
+    private func restore(from state: PersistedState) {
+        seeds = state.franchises
+        fuelSeeds = state.fuelSeeds
+        managers = state.managers
+        assignments = state.assignments
+        mapPositions = state.mapPositions
+        prices = state.prices
+        sucursales = [:]
+        for franchise in seeds {
+            let snapshot = state.sucursales[franchise.id]
+            let vm = SucursalViewModel(
+                id: franchise.id,
+                tanks: snapshot?.tanks ?? Self.defaultTanks(id: franchise.id),
+                inventoryRec: snapshot?.inventoryRec,
+                receptions: snapshot?.receptions ?? [],
+                cortes: snapshot?.cortes ?? [])
+            vm.onChange = { [weak self] in self?.persist() }
+            sucursales[franchise.id] = vm
+        }
+    }
+
+    /// Persiste el estado actual (sucursales, gerentes, precios, cortes) a disco.
+    func persist() {
+        var snapshot: [String: SucursalSnapshot] = [:]
+        for (id, vm) in sucursales {
+            snapshot[id] = SucursalSnapshot(tanks: vm.tanks, cortes: vm.cortes,
+                                             inventoryRec: vm.inventoryRec, receptions: vm.receptions)
+        }
+        PersistenceStore.save(PersistedState(franchises: seeds, fuelSeeds: fuelSeeds, managers: managers,
+                                              assignments: assignments, mapPositions: mapPositions,
+                                              prices: prices, sucursales: snapshot))
+    }
+
+    /// Borra los datos guardados y vuelve a los datos de demostración originales.
+    func resetToDemoData() {
+        PersistenceStore.clear()
+        seedMockData()
     }
     static func defaultTanks(id: String) -> [Tank] {
         FuelType.allCases.map {
@@ -71,6 +122,7 @@ struct GeneralAccount {
     @discardableResult func setPrice(_ value: Double, for fuel: FuelType) -> Bool {
         guard value > 0, value <= 100 else { return false }
         prices[fuel] = (value * 100).rounded() / 100
+        persist()
         return true
     }
     var franchises: [Franchise] {
@@ -96,6 +148,7 @@ struct GeneralAccount {
         sucursales[id] = SucursalViewModel(id: id, tanks: Self.defaultTanks(id: id))
         let index = seeds.count - 1
         mapPositions[id] = MapPosition(x: CGFloat(35 + (index * 47) % 320), y: CGFloat(35 + (index * 31) % 170))
+        persist()
         return id
     }
     @discardableResult func addManager(name: String, email: String, password: String) -> UUID? {
@@ -107,11 +160,13 @@ struct GeneralAccount {
               email != generalAccount.email.lowercased() else { return nil }
         let manager = Manager(id: UUID(), name: name, email: email, password: password, role: "Gerente de sucursal")
         managers.append(manager)
+        persist()
         return manager.id
     }
     @discardableResult func link(manager: UUID, station: String) -> Bool {
         guard managers.contains(where: { $0.id == manager }), seeds.contains(where: { $0.id == station }) else { return false }
         assignments[station] = manager
+        persist()
         return true
     }
 

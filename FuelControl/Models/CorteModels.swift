@@ -19,7 +19,7 @@ enum TankLevel: String, CaseIterable {
     }
 }
 
-struct Manager: Identifiable {
+struct Manager: Identifiable, Codable {
     let id: UUID
     let name: String
     let email: String
@@ -27,7 +27,7 @@ struct Manager: Identifiable {
     let role: String
 }
 
-enum CorteTurno: String, CaseIterable, Identifiable {
+enum CorteTurno: String, CaseIterable, Codable, Identifiable {
     case matutino = "Matutino"
     case vespertino = "Vespertino / Nocturno"
     var id: String { rawValue }
@@ -40,12 +40,12 @@ enum MovementCategory: String, CaseIterable, Identifiable {
     var id: String { rawValue }
 }
 
-enum LossReason: String, CaseIterable, Identifiable {
+enum LossReason: String, CaseIterable, Codable, Identifiable {
     case merma = "Merma", fuga = "Fuga", falla = "Falla técnica", derrame = "Derrame"
     var id: String { rawValue }
 }
 
-struct PumpEntry: Identifiable {
+struct PumpEntry: Identifiable, Codable {
     let id: Int
     var fuel: FuelType = .regular
     var sales = ""
@@ -55,7 +55,7 @@ struct PumpEntry: Identifiable {
     var registered = false
 }
 
-struct Corte: Identifiable {
+struct Corte: Identifiable, Codable {
     let id: UUID
     let day: Date
     let turno: CorteTurno
@@ -63,7 +63,7 @@ struct Corte: Identifiable {
     var closedAt: Date?
 }
 
-struct FuelTotal: Identifiable {
+struct FuelTotal: Identifiable, Codable {
     let fuel: FuelType
     var gallons: Double = 0
     var revenue: Double = 0

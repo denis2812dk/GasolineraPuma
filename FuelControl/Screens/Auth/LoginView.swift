@@ -8,7 +8,6 @@ struct LoginView: View {
     @State private var email = ""
     @State private var password = ""
     @State private var errorMessage: String?
-    @State private var showForgotPasswordAlert = false
 
     var body: some View {
         ZStack {
@@ -99,39 +98,13 @@ struct LoginView: View {
 
                     Button("Iniciar sesión") { submit() }
                         .buttonStyle(.iosPrimary)
-
-                    Button("¿Olvidaste tu contraseña?") { showForgotPasswordAlert = true }
-                        .font(.system(size: 14, weight: .medium))
-                        .foregroundStyle(Theme.primary)
                 }
                 .padding(20)
                 .iosCard()
                 .padding(.horizontal, 20)
 
-                VStack(spacing: 8) {
-                    Button { submit() } label: {
-                        ZStack {
-                            RoundedRectangle(cornerRadius: 16, style: .continuous)
-                                .fill(.white.opacity(0.1))
-                                .frame(width: 56, height: 56)
-                            Image(systemName: "faceid")
-                                .font(.system(size: 28))
-                                .foregroundStyle(.white)
-                        }
-                    }
-                    Text("Iniciar con Face ID")
-                        .font(.system(size: 12))
-                        .foregroundStyle(.white.opacity(0.5))
-                }
-                .padding(.top, 24)
-
                 Spacer(minLength: 20)
             }
-        }
-        .alert("Recuperar contraseña", isPresented: $showForgotPasswordAlert) {
-            Button("Entendido", role: .cancel) {}
-        } message: {
-            Text("Contacta a tu Gerente General para que restablezca tu contraseña desde Administración.")
         }
     }
 

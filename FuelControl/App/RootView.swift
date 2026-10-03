@@ -21,10 +21,12 @@ struct RootView: View {
         }
         .onChange(of: scenePhase) { _, phase in
             if phase == .active { general.refreshDay() }
+            if phase == .background || phase == .inactive { general.persist() }
         }
         .task {
             while !Task.isCancelled {
                 general.refreshDay()
+                general.persist()
                 do { try await Task.sleep(for: .seconds(30)) }
                 catch { break }
             }
